@@ -1,0 +1,19 @@
+<div id="login" class="page">
+	<header class="login"></header>
+	<main>
+		<form novalidate name="vm.loginForm"  data-ng-submit="vm.signin()">
+
+			<div class="list">
+				<label class="item item-input">
+					<input class="login" type="text" placeholder="Login" data-ng-model="vm.login" autocapitalize="off"
+						   autocorrect="off" autofocus required />
+				</label>
+				<label class="item item-input item-button-right">
+					<input class="login" type="password" placeholder="Senha" data-ng-model="vm.login" autocapitalize="off"
+						   autocorrect="off" required />
+					<button class="button button-icon" type="submit" data-ng-show="vm.loginForm.$valid"><i class="icon ion-arrow-right-c"></i></button>
+				</label>
+			</div>
+		</form>
+	</main>
+</div>

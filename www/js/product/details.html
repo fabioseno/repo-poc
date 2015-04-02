@@ -1,0 +1,57 @@
+<ion-view view-title="Produto">
+	<ion-nav-buttons class="button button-clear button-positive" side="secondary">
+		<button class="button button-clear" data-ng-click="vm.save();">Salvar</button>
+	</ion-nav-buttons>
+	<ion-content data-has-bouncing="false">
+		<div class="list">
+			<label class="item item-input">
+				<span class="input-label">Código pai</span>
+				<input type="text" placeholder="Código pai" data-ng-model="vm.product.parentId" ng-change="vm.findByParentId()" ng-model-options="{updateOn: 'blur'}" data-ng-readonly="!vm.canEdit" >
+			</label>
+			<label class="item item-input">
+				<span class="input-label">SKU</span>
+				<input type="text" placeholder="SKU" data-ng-model="vm.product.sku" data-ng-change="vm.findByChildId()" ng-model-options="{updateOn: 'blur'}" data-ng-readonly="!vm.canEdit" autofocus>
+			</label>
+		</div>
+		Cor:
+		<ion-scroll zooming="true" direction="x" style="height: 40px">
+			<ul>
+				<li data-ng-repeat="color in vm.product.colors">
+					<span data-ng-bind="color.name"></span>
+					<span data-ng-bind="color.id"></span>
+				</li>
+			</ul>
+		</ion-scroll>
+		Tamanho:
+		<ion-scroll zooming="true" direction="x" style="height: 40px">
+			<ul>
+				<li data-ng-repeat="size in vm.product.sizes">
+					<span data-ng-bind="size.name"></span>
+				</li>
+			</ul>
+		</ion-scroll>
+		Aroma:
+		<ion-scroll zooming="true" direction="x" style="height: 40px">
+			<ul>
+				<li data-ng-repeat="scent in vm.product.scents">
+					<span data-ng-bind="scent.name"></span>
+				</li>
+			</ul>
+		</ion-scroll>
+		<div>
+			<div>
+				<img data-ng-src="{{ vm.product.pictureSmallUrl }}">
+			</div>
+			<div>
+				<span data-ng-bind="vm.product.name"></span>
+				<span data-ng-bind="vm.product.color"></span>
+				<span data-ng-bind="vm.product.size"></span>
+				<span data-ng-bind="vm.product.scent"></span>
+				<span data-ng-bind="vm.product.division"></span>
+				<span data-ng-bind="vm.product.group"></span>
+				<span data-ng-bind="vm.product.price | currency : 'R$ '"></span>
+				<div data-numeric-selector quantity="vm.product.quantity"></div>
+			</div>
+		</div>
+	</ion-content>
+</ion-view>

@@ -1,0 +1,65 @@
+<ion-view view-title="Solicitação">
+	<ion-nav-buttons class="button button-clear button-positive" side="secondary">
+		<a class="button button-clear" data-ng-click="vm.addProduct();">+ produto</a>
+	</ion-nav-buttons>
+	<ion-content data-has-bouncing="false">
+		<div class="list card">
+			<div data-ng-show="vm.request.id">
+				<div class="row">
+					<div class="col field">
+						<label>Cód.</label>
+						<span type="text" data-ng-bind="vm.request.id"></span>
+					</div>
+					<div class="col field">
+						<label>Status</label>
+						<span data-ng-bind="vm.request.status"></span>
+					</div>
+					<div class="col field">
+						<label>Divisão</label>
+						<span type="text" data-ng-bind="vm.request.division"></span>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col field">
+						<label>Solicitado por</label>
+						<span type="text" data-ng-bind="vm.request.createdBy"></span>
+					</div>
+					<div class="col field">
+						<label>Data</label>
+						<span type="text" data-ng-bind="vm.request.creationDate | date:'dd/MM/yy HH:mm'"></span>
+					</div>
+				</div>
+			</div>
+			<div class="item inner-tabs tabs tabs-secondary tabs-icon-left">
+				<a class="tab-item inner-tab-item" data-ng-click="vm.changeStatus();" data-ng-show="vm.enableStatusButton();">
+					<i class="icon ion-checkmark-circled"></i>
+					<span data-ng-bind="vm.updateStatusButtonLabel"></span>
+				</a>
+				<a class="tab-item inner-tab-item" data-ng-click="vm.deleteRequest();" data-ng-show="vm.canDelete(vm.request);">
+					<i class="icon ion-close-circled"></i>
+					Excluir solicitação
+				</a>
+			</div>
+			<div class="product-list">
+				<ion-list>
+					<ion-item data-ng-click="vm.viewProduct(product);" data-ng-repeat="product in vm.request.products track by $index" href="#/request/{{vm.request.id}}/product/{{product.sku}}">
+						<div class="image">
+							<img class="product-small" src="assets/img/vestido.jpg">
+						</div>
+						<div class="details">
+							<span data-ng-bind="product.name"></span><br /><br />
+							<span data-ng-bind="product.parentId"></span> - <span data-ng-bind="product.childId"></span><br />
+							<span data-ng-bind="product.color"></span> (<span data-ng-bind="product.colorId"></span>)<br />
+							Tamanho <span data-ng-bind="product.size"></span><br />
+							<span data-ng-bind="product.division"></span> - <span data-ng-bind="product.group"></span><br />
+							<span data-ng-bind="product.price | currency : 'R$ '"></span> - <span data-ng-bind="product.quantity"></span> unidades
+						</div>
+						<div class="delete">
+							<button class="delete-button" data-ng-click="vm.removeProduct(product, event);">X</button>
+						</div>
+					</ion-item>
+				</ion-list>
+			</div>
+		</div>
+	</ion-content>
+</ion-view>
