@@ -1,0 +1,18 @@
+<ion-view view-title="Configurações" cache-view="false">
+    <ion-content>
+        <ion-list>
+            <ion-toggle ng-model="vm.settings.useEcommerceName">
+                Nomes do e-commerce
+            </ion-toggle>
+            <ion-toggle ng-model="vm.settings.showPictures">
+                Mostrar fotos
+            </ion-toggle>
+            <ion-toggle ng-model="vm.settings.onlinePictures">
+                Fotos online
+            </ion-toggle>
+            <ion-item>
+                <a class="logoff" data-ng-click="vm.signout();">Sair</a>
+            </ion-item>
+        </ion-list>
+    </ion-content>
+</ion-view>

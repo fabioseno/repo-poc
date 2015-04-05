@@ -10,6 +10,11 @@ body {
 	vertical-align: top;
 }
 
+.logoff {
+    text-decoration: none;
+    color: red;
+}
+
 /* Numeric selector */
 .quantity-selector button {
 	float: left;
@@ -47,10 +52,30 @@ body {
 	border-color: #d71920;
 }
 
+.custom-item .item-content, .item-radio .item-content {
+    padding: 16px !important;
+}
+
+.product-header {
+    width: 100%;
+    clear: both;
+    margin-bottom: 10px;
+}
+
+.product-body {
+    white-space: normal;
+    clear: both;
+}
+
+.product-body .details {
+    float: left;
+}
+
 .inner-tabs {
 	border: 0;
 	border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
 	background-color: transparent !important;
+    background-image: none !important;
 }
 
 .inner-tab-item {
@@ -62,9 +87,12 @@ body {
 	border-top: 1px solid rgba(0, 0, 0, 0.1) !important;
 }
 
+.image {
+    text-align: right;
+}
+
 .image .product-small {
-	width: 80px;
-	float: left;
+	width: 100px;
 }
 
 /* Field */

@@ -1,0 +1,6 @@
+{
+    "jscodehints.detectedExclusions": [
+        "/Users/seno/projects/repo-poc/www/js/request/requestManager.js",
+        "/Users/seno/projects/repo-poc/www/js/login/login.js"
+    ]
+}

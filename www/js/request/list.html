@@ -1,16 +1,18 @@
-<ion-view view-title="Solicitações">
-	<ion-nav-buttons class="button button-clear button-positive" side="secondary">
-		<a class="button button-clear" href="#/requests/new">Novo</a>
-	</ion-nav-buttons>
-	<ion-content>
-		<ion-list>
-			<ion-item data-ng-repeat="request in vm.requests | filter: vm.search | orderBy: 'creationDate': true track by $index" href="#/request/{{request.id}}">
-				<span><b># {{request.id}}</b> {{request.status}}</span>
-				<p></p>
-				<p>{{request.division}} / {{request.group}}</p>
-				<p><b>Responsável: </b>{{request.createdBy}}</p>
-				<p><b>desde: </b>{{request.creationDate | todayDateFormat : 'HH:mm' : 'dd/MM/yy HH:mm'}}</p>
-			</ion-item>
-		</ion-list>
-	</ion-content>
+<ion-view view-title="Solicitações" cache-view="false">
+    <ion-nav-buttons class="button button-clear button-positive" side="secondary">
+        <a class="button button-clear" href="#/requests/new">nova</a>
+    </ion-nav-buttons>
+    <ion-content>
+        <ion-refresher pulling-text="Atualizar..." on-refresh="vm.loadRequests();">
+        </ion-refresher>
+        <ion-list>
+            <ion-item data-ng-repeat="request in vm.requests | filter: vm.search | orderBy: 'creationDate': true track by $index" href="#/request/{{request.id}}">
+                <span><b># {{request.id}}</b></span> - {{request.status}}
+
+                <p>{{ request.products | divisionName }} / {{ request.products | groupName }} - {{ request.products.length }} produto(s)</p>
+
+                <p>Solicitado em <b>{{request.creationDate | todayDateFormat : 'HH:mm' : 'dd/MM/yy HH:mm'}}</b> por <b>{{request.createdBy}}</b></p>
+            </ion-item>
+        </ion-list>
+    </ion-content>
 </ion-view>

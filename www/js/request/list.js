@@ -2,7 +2,7 @@
 (function () {
 	'use strict';
 
-	function RequestList($ionicHistory, requestManager, userManager, toaster) {
+	function RequestList(requestManager, userManager, toaster) {
 		var vm = this;
 
 		vm.showFilters = false;
@@ -25,7 +25,7 @@
 		}
 	}
 
-	RequestList.$inject = ['$ionicHistory', 'requestManager', 'userManager', 'toaster'];
+	RequestList.$inject = ['requestManager', 'userManager', 'toaster'];
 
 	angular.module('replenishment').controller('requestList', RequestList);
 

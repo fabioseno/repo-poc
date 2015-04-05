@@ -54,8 +54,8 @@ angular.module('replenishment', ['ionic', 'wt-core']).run(
 		url: '/requests/new',
 		views: {
 			'tab-requests': {
-				templateUrl: 'js/request/details.html',
-				controller: 'requestDetails as vm'
+				templateUrl: 'js/product/details.html',
+				controller: 'productDetails as vm'
 			}
 		}
 	}).state('app.tab.request-detail', {
@@ -98,12 +98,12 @@ angular.module('replenishment', ['ionic', 'wt-core']).run(
 				controller: 'ChatDetailCtrl'
 			}
 		}
-	}).state('app.tab.account', {
-		url: '/account',
+	}).state('app.tab.settings', {
+		url: '/settings',
 		views: {
-			'tab-account': {
-				templateUrl: 'templates/tab-account.html',
-				controller: 'AccountCtrl'
+			'tab-settings': {
+				templateUrl: 'js/settings/settings.html',
+				controller: 'settings as vm'
 			}
 		}
 	});
