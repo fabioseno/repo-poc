@@ -82,20 +82,19 @@ angular.module('replenishment', ['ionic', 'wt-core']).run(
 				controller: 'productDetails as vm'
 			}
 		}
-	}).state('app.tab.chats', {
-		url: '/chats',
+	}).state('app.tab.setup', {
+		url: '/setup',
 		views: {
-			'tab-chats': {
-				templateUrl: 'templates/tab-chats.html',
-				controller: 'ChatsCtrl'
+			'tab-setup': {
+				templateUrl: 'js/setup/setup.html'
 			}
 		}
-	}).state('app.tab.chat-detail', {
-		url: '/chats/:chatId',
+	}).state('app.tab.test-products', {
+		url: '/setup/test-products',
 		views: {
 			'tab-chats': {
-				templateUrl: 'templates/chat-detail.html',
-				controller: 'ChatDetailCtrl'
+				templateUrl: 'js/setup/products.html',
+				controller: 'setupData'
 			}
 		}
 	}).state('app.tab.settings', {

@@ -1,18 +1,52 @@
 <ion-view view-title="Solicitações" cache-view="false">
-    <ion-nav-buttons class="button button-clear button-positive" side="secondary">
-        <a class="button button-clear" href="#/requests/new">nova</a>
-    </ion-nav-buttons>
-    <ion-content>
-        <ion-refresher pulling-text="Atualizar..." on-refresh="vm.loadRequests();">
-        </ion-refresher>
-        <ion-list>
-            <ion-item data-ng-repeat="request in vm.requests | filter: vm.search | orderBy: 'creationDate': true track by $index" href="#/request/{{request.id}}">
-                <span><b># {{request.id}}</b></span> - {{request.status}}
+	<ion-nav-buttons class="button button-clear button-positive" side="secondary">
+		<a class="button button-clear" href="#/requests/new">nova</a>
+	</ion-nav-buttons>
+	<ion-content>
+		<ion-refresher pulling-text="Atualizar..." on-refresh="vm.loadRequests();">
+		</ion-refresher>
+		<div class="list card">
+			<div class="item item-divider" data-ng-click="showFilter = !showFilter">
+				Filtros
+			</div>
+			<div data-ng-show="showFilter">
+				<div class="item item-input item-right">
+					<span class="input-label">Código</span>
+					<input type="tel" data-ng-model="vm.search.id" />
+				</div>
+				<div class="item item-input item-select">
+					<span class="input-label">Status</span>
+					<select data-ng-model="vm.search.status">
+						<option value="">Todos</option>
+						<option>Rascunho</option>
+						<option>Pendente</option>
+						<option>Em separação</option>
+						<option>Separado</option>
+						<option>Finalizado</option>
+					</select>
+				</div>
+				<div class="item item-input item-right">
+					<span class="input-label">Solicitante</span>
+					<input type="text" data-ng-model="vm.search.createdBy" />
+				</div>
+				<div class="item item-input item-right">
+					<span class="input-label">Divisão</span>
+					<input type="text" data-ng-model="vm.search.division" />
+				</div>
+				<div class="item item-input item-right">
+					<span class="input-label">Grupo</span>
+					<input type="text" data-ng-model="vm.search.group" />
+				</div>
+			</div>
+		</div>
+		<div class="list">
+			<div class="item" data-ng-repeat="request in vm.requests | filter: vm.search | orderBy: 'creationDate': true track by $index" data-ng-click="vm.goTo('/request/{{request.id}}')">
+				<span><b># {{request.id}}</b></span> - {{request.status}}
 
-                <p>{{ request.products | divisionName }} / {{ request.products | groupName }} - {{ request.products.length }} produto(s)</p>
+				<p>{{ request.division }} / {{ request.group }} - {{ request.products.length }} produto(s)</p>
 
-                <p>Solicitado em <b>{{request.creationDate | todayDateFormat : 'HH:mm' : 'dd/MM/yy HH:mm'}}</b> por <b>{{request.createdBy}}</b></p>
-            </ion-item>
-        </ion-list>
-    </ion-content>
+				<p>Solicitado em <b>{{request.creationDate | todayDateFormat : 'HH:mm' : 'dd/MM/yy HH:mm'}}</b> por <b>{{request.createdBy}}</b></p>
+			</div>
+		</div>
+	</ion-content>
 </ion-view>

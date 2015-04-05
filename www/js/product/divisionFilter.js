@@ -4,20 +4,21 @@ angular.module('replenishment').filter('divisionName', function () {
     
     return function (products) {
         var i = 0,
-            division = '';
+            name = '';
         
         if (products) {
             for (i = 0; i < products.length; i += 1) {
-                division = products[i].structure.division;
+				if (!name) {
+					name = products[i].structure.division.name;
+				}
                 
-                if (division && division !== products[i].structure.division.name) {
-                    division = 'Várias';
+                if (name !== products[i].structure.division.name) {
+                    name = 'Várias';
                     break;
                 }
             }
         }
         
-        return division;
-        
+        return name;
     };
 });

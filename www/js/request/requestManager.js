@@ -1,269 +1,306 @@
 /*global angular*/
-angular.module('replenishment').service('requestManager', ['localStorageProxy', 'userManager', 'toaster', function (localStorageProxy, userManager, toaster) {
-    'use strict';
+angular.module('replenishment').service('requestManager', ['$filter', 'localStorageProxy', 'productManager', 'userManager', 'toaster', function ($filter, localStorageProxy, productManager, userManager, toaster) {
+	'use strict';
 
-    var self = this,
-        requests;
+	var self = this,
+		requests;
 
-    self.status = {
-        draft: 'Rascunho',
-        pending: 'Pendente',
-        inSeparation: 'Em separação',
-        separated: 'Separado',
-        inStockRepleshment: 'Em reposição',
-        finished: 'Finalizado'
-    };
 
-    self.canEdit = function (request) {
-        return (userManager.getUserRole().id === userManager.roles.salesAssistant.id
-                && (!request || !request.id || (request.id && request.status === self.status.draft)));
-    };
+	self.status = {
+		draft: 'Rascunho',
+		pending: 'Pendente',
+		inSeparation: 'Em separação',
+		separated: 'Separado',
+		inStockRepleshment: 'Em reposição',
+		finished: 'Finalizado'
+	};
 
-    self.canExecute = function (request) {
-        return (userManager.getUserRole().id === userManager.roles.stockAssistant.id
-                && (!request || !request.id || (request.id && (request.status === self.status.pending || request.status === self.status.separated))));
-    };
+	self.canEdit = function (request) {
+		return (userManager.getUserRole().id === userManager.roles.salesAssistant.id
+				&& (!request || !request.id || (request.id && request.status === self.status.draft)));
+	};
 
-    self.canDelete = function (request) {
-        return (request && request.status === self.status.draft);
-    };
+	self.canExecute = function (request) {
+		return (userManager.getUserRole().id === userManager.roles.stockAssistant.id
+				&& (!request || !request.id || (request.id && (request.status === self.status.pending || request.status === self.status.separated))));
+	};
 
-    self.getList = function () {
-        var request,
-            i;
+	self.canDelete = function (request) {
+		return (request && request.status === self.status.draft);
+	};
 
-        requests = localStorageProxy.get('REQUEST_LIST') || [];
+	self.getList = function () {
+		var request,
+			product,
+			newProduct,
+			i,
+			j;
 
-        for (i = requests.length - 1; i >= 0; i -= 1) {
-            request = requests[i];
+		requests = localStorageProxy.get('REQUEST_LIST') || [];
 
-            if (userManager.getUserRole().id === userManager.roles.stockAssistant.id && (request.status === self.status.draft || request.status === self.status.inStockRepleshment || requests[i].status === self.status.finished)) {
-                requests.splice(i, 1);
-            }
-        }
+		for (i = requests.length - 1; i >= 0; i -= 1) {
+			request = requests[i];
 
-        return requests;
-    };
+			if (userManager.getUserRole().id === userManager.roles.stockAssistant.id && (request.status === self.status.draft || request.status === self.status.inStockRepleshment || requests[i].status === self.status.finished)) {
+				requests.splice(i, 1);
+			}
+		}
 
-    self.load = function (id) {
-        var selectedRequest,
-            request,
-            i;
+		for (i = 0; i < requests.length; i += 1) {
+			request = requests[i];
 
-        if (id) {
-            requests = localStorageProxy.get('REQUEST_LIST') || [];
+			for (j = 0; j < request.products.length; j += 1) {
+				product = request.products[j];
 
-            for (i = 0; i < requests.length; i += 1) {
-                request = requests[i];
+				newProduct = productManager.findBySku(product.sku);
+				newProduct.quantity = product.quantity;
+				newProduct.status = product.status;
 
-                if (String(request.id) === String(id)) {
-                    selectedRequest = request;
-                    selectedRequest.products = selectedRequest.products || [];
+				request.products[j] = newProduct;
+			}
 
-                    break;
-                }
-            }
-        }
+			request.division = $filter('divisionName')(request.products);
+			request.group = $filter('groupName')(request.products);
+		}
 
-        return selectedRequest;
-    };
+		return requests;
+	};
 
-    self.deleteRequest = function (id) {
-        var request,
-            i;
+	self.load = function (id) {
+		var selectedRequest,
+			newProduct,
+			product,
+			request,
+			i,
+			j;
 
-        if (id) {
-            requests = localStorageProxy.get('REQUEST_LIST') || [];
+		if (id) {
+			requests = localStorageProxy.get('REQUEST_LIST') || [];
 
-            for (i = 0; i < requests.length; i += 1) {
-                request = requests[i];
+			for (i = 0; i < requests.length; i += 1) {
+				request = requests[i];
 
-                if (String(request.id) === String(id)) {
-                    requests.splice(i, 1);
+				if (String(request.id) === String(id)) {
+					selectedRequest = request;
 
-                    localStorageProxy.add('REQUEST_LIST', requests);
+					for (j = 0; j < selectedRequest.products.length; j += 1) {
+						product = selectedRequest.products[j];
 
-                    break;
-                }
-            }
-        }
-    };
+						newProduct = productManager.findBySku(product.sku);
+						newProduct.quantity = product.quantity;
+						newProduct.status = product.status;
 
-    self.saveProduct = function (request, product) {
-        var productExists = false,
-            message,
-            selectedProduct,
-            i;
+						selectedRequest.products[j] = newProduct;
+					}
 
-        if (!product.quantity) {
-            message = 'Selecione uma quantidade!';
-            return;
-        }
+					selectedRequest.division = $filter('divisionName')(selectedRequest.products);
+					selectedRequest.group = $filter('groupName')(selectedRequest.products);
 
-        if (product.parentId) {
-            if (request) {
-                request = self.load(request.id);
-            } else {
-                request = {
-                    products: []
-                };
-                request.id = new Date().getMilliseconds();
-                request.creationDate = new Date().getTime();
-                request.createdBy = localStorageProxy.get('USER_LOGIN');
-                request.status = self.status.draft;
+					break;
+				}
+			}
+		}
 
-                requests.push(request);
-            }
+		return selectedRequest;
+	};
 
-            for (i = 0; i < request.products.length; i += 1) {
-                selectedProduct = request.products[i];
+	self.deleteRequest = function (id) {
+		var request,
+			i,
+			j;
 
-                if (product.sku === selectedProduct.sku) {
-                    selectedProduct.status = product.status;
-                    selectedProduct.division = product.division;
-                    selectedProduct.group = product.group;
-                    selectedProduct.price = product.price;
-                    selectedProduct.quantity = product.quantity;
+		if (id) {
+			requests = localStorageProxy.get('REQUEST_LIST') || [];
 
-                    message = 'Produto alterado com sucesso!';
+			for (i = 0; i < requests.length; i += 1) {
+				request = requests[i];
 
-                    productExists = true;
-                    break;
-                }
-            }
+				if (String(request.id) === String(id)) {
+					requests.splice(i, 1);
 
-            if (!productExists) {
-                message = 'Produto adicionado com sucesso!';
-                request.products.push(product);
-            }
+					localStorageProxy.add('REQUEST_LIST', requests);
 
-            localStorageProxy.add('REQUEST_LIST', requests);
-            toaster.show(message);
-        }
+					break;
+				}
+			}
+		}
+	};
 
-        return request;
-    };
+	self.saveProduct = function (request, product) {
+		var productExists = false,
+			message,
+			selectedProduct,
+			i;
 
-    self.removeProduct = function (request, product) {
-        var productExists = false,
-            message,
-            selectedProduct,
-            i;
+		if (!product.quantity) {
+			message = 'Selecione uma quantidade!';
+			return;
+		}
 
-        if (request) {
-            request = self.load(request.id);
+		if (product.productCode) {
+			if (request) {
+				request = self.load(request.id);
+			} else {
+				request = {
+					products: []
+				};
+				request.id = new Date().getMilliseconds();
+				request.creationDate = new Date().getTime();
+				request.createdBy = localStorageProxy.get('USER_LOGIN');
+				request.status = self.status.draft;
 
-            for (i = 0; i < request.products.length; i += 1) {
-                selectedProduct = request.products[i];
+				requests.push(request);
+			}
 
-                if (product.sku === selectedProduct.sku) {
-                    request.products.splice(i, 1);
-                    break;
-                }
-            }
+			for (i = 0; i < request.products.length; i += 1) {
+				selectedProduct = request.products[i];
 
-            localStorageProxy.add('REQUEST_LIST', requests);
-        }
+				if (selectedProduct.sku === product.sku) {
+					selectedProduct.status = product.status;
+					//                    selectedProduct.division = product.division;
+					//                    selectedProduct.group = product.group;
+					//                    selectedProduct.price = product.price;
+					selectedProduct.quantity = product.quantity;
 
-        return request;
-    };
+					message = 'Produto alterado com sucesso!';
 
-    self.getProduct = function (request, productId) {
-        var productExists = false,
-            selectedProduct,
-            i;
+					productExists = true;
+					break;
+				}
+			}
 
-        if (request) {
-            request = self.load(request.id);
+			if (!productExists) {
+				message = 'Produto adicionado com sucesso!';
+				request.products.push({
+					sku: product.sku,
+					quantity: product.quantity,
+					status: product.status
+				});
+			}
 
-            for (i = 0; i < request.products.length; i += 1) {
-                selectedProduct = request.products[i];
+			localStorageProxy.add('REQUEST_LIST', requests);
+			toaster.show(message);
+		}
 
-                if (productId === selectedProduct.sku) {
-                    break;
-                }
-            }
-        }
+		return request;
+	};
 
-        return selectedProduct;
-    };
+	self.removeProduct = function (request, product) {
+		var productExists = false,
+			message,
+			selectedProduct,
+			i;
 
-    self.getNextStatusAction = function (currentStatus) {
-        switch (currentStatus) {
-        case self.status.draft:
-            return 'Solicitar separação';
-        case self.status.pending:
-            return 'Iniciar separação';
-        case self.status.inSeparation:
-            return 'Finalizar separação';
-        case self.status.separated:
-            return 'Iniciar reposição';
-        case self.status.inStockRepleshment:
-            return 'Finalizar reposição';
-        }
-    };
+		if (request) {
+			request = self.load(request.id);
 
-    self.moveToNextStatus = function (request) {
-        var permissionDenied = true,
-            selectedRequest = {},
-            userRoleId = userManager.getUserRole().id,
-            i;
+			for (i = 0; i < request.products.length; i += 1) {
+				selectedProduct = request.products[i];
 
-        if (request) {
-            request = self.load(request.id);
+				if (product.sku === selectedProduct.sku) {
+					request.products.splice(i, 1);
+					break;
+				}
+			}
 
-            switch (request.status) {
-            case self.status.draft:
-                if (userRoleId === userManager.roles.salesAssistant.id) {
-                    request.status = self.status.pending;
-                    request.pendingStatusDate = new Date();
-                    permissionDenied = false;
-                }
+			localStorageProxy.add('REQUEST_LIST', requests);
+		}
 
-                break;
-            case self.status.pending:
-                //if (userRoleId === userManager.roles.stockAssistant.id) {
-                request.status = self.status.inSeparation;
-                request.inSeparationStatusDate = new Date();
-                permissionDenied = false;
-                //}
+		return request;
+	};
 
-                break;
-            case self.status.inSeparation:
-                //if (userRoleId === userManager.roles.stockAssistant.id) {
-                request.status = self.status.separated;
-                request.separatedStatusDate = new Date();
-                permissionDenied = false;
-                //}
+	self.getProduct = function (request, productId) {
+		var productExists = false,
+			selectedProduct,
+			i;
 
-                break;
-            case self.status.separated:
-                if (userRoleId === userManager.roles.salesAssistant.id) {
-                    request.status = self.status.inStockRepleshment;
-                    request.replacingStatusDate = new Date();
-                    permissionDenied = false;
-                }
+		if (request) {
+			request = self.load(request.id);
 
-                break;
-            case self.status.inStockRepleshment:
-                if (userRoleId === userManager.roles.salesAssistant.id) {
-                    request.status = self.status.finished;
-                    request.replacedStatusDate = new Date();
-                    permissionDenied = false;
-                }
+			for (i = 0; i < request.products.length; i += 1) {
+				selectedProduct = request.products[i];
 
-                break;
-            }
+				if (productId === selectedProduct.sku) {
+					break;
+				}
+			}
+		}
 
-            if (permissionDenied) {
-                toaster.show('Usuário sem permissáo para executar a operação!');
-            } else {
-                localStorageProxy.add('REQUEST_LIST', requests);
-            }
-        }
-    };
+		return selectedProduct;
+	};
+
+	self.getNextStatusAction = function (currentStatus) {
+		switch (currentStatus) {
+		case self.status.draft:
+			return 'Solicitar separação';
+		case self.status.pending:
+			return 'Iniciar separação';
+		case self.status.inSeparation:
+			return 'Finalizar separação';
+		case self.status.separated:
+			return 'Iniciar reposição';
+		case self.status.inStockRepleshment:
+			return 'Finalizar reposição';
+		}
+	};
+
+	self.moveToNextStatus = function (request) {
+		var permissionDenied = true,
+			selectedRequest = {},
+			userRoleId = userManager.getUserRole().id,
+			i;
+
+		if (request) {
+			request = self.load(request.id);
+
+			switch (request.status) {
+			case self.status.draft:
+				if (userRoleId === userManager.roles.salesAssistant.id) {
+					request.status = self.status.pending;
+					request.pendingStatusDate = new Date();
+					permissionDenied = false;
+				}
+
+				break;
+			case self.status.pending:
+				//if (userRoleId === userManager.roles.stockAssistant.id) {
+				request.status = self.status.inSeparation;
+				request.inSeparationStatusDate = new Date();
+				permissionDenied = false;
+				//}
+
+				break;
+			case self.status.inSeparation:
+				//if (userRoleId === userManager.roles.stockAssistant.id) {
+				request.status = self.status.separated;
+				request.separatedStatusDate = new Date();
+				permissionDenied = false;
+				//}
+
+				break;
+			case self.status.separated:
+				if (userRoleId === userManager.roles.salesAssistant.id) {
+					request.status = self.status.inStockRepleshment;
+					request.replacingStatusDate = new Date();
+					permissionDenied = false;
+				}
+
+				break;
+			case self.status.inStockRepleshment:
+				if (userRoleId === userManager.roles.salesAssistant.id) {
+					request.status = self.status.finished;
+					request.replacedStatusDate = new Date();
+					permissionDenied = false;
+				}
+
+				break;
+			}
+
+			if (permissionDenied) {
+				toaster.show('Usuário sem permissáo para executar a operação!');
+			} else {
+				localStorageProxy.add('REQUEST_LIST', requests);
+			}
+		}
+	};
 }]);
-
-// -- alterar responsavel pela ultima alteracao na solicitacao
-// incluir nome no grid
-// avisar se um usuario quisre continuar a tarefa de outro usuario. confirm dialog 

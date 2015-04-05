@@ -52,9 +52,8 @@
             </label>
         </div>
         <div class="list card" data-ng-show="vm.product.name">
-            <label class="item item-input" data-ng-show="vm.product.pictureSmallUrl ">
-                <span class="input-label">Imagem</span>
-                <img data-ng-src="{{ vm.product.pictureSmallUrl }}">
+            <label class="item image" data-ng-show="vm.product.name">
+                <img data-ng-src="{{ vm.product.pictureUrl }}">
             </label>
             <label class="item item-input" data-ng-show="vm.canExecute();">
                 <span class="input-label">Quantidade solicitada</span>
@@ -67,25 +66,25 @@
             <label class="item item-text-wrap">
                 <span data-ng-bind="vm.product.name"></span>
             </label>
-            <label class="item item-input" data-ng-show="vm.product.selectedSku.color">
-                <span class="input-label">Cor</span>
-                <span data-ng-bind="vm.product.selectedSku.color.name"></span>
-            </label>
-            <label class="item item-input" data-ng-show="vm.product.division">
+			<label class="item item-input" data-ng-show="vm.product.structure.division.name">
                 <span class="input-label">Divisão/Grupo</span>
-                <span>{{ vm.product.structure.division.name }} / {{ vm.product.structure.group.name }}</span>
+                <span>{{ vm.product.structure.division.name }}/{{ vm.product.structure.group.name }}</span>
             </label>
-            <label class="item item-input" data-ng-show="vm.product.selectedSku.size">
+            <label class="item" data-ng-show="vm.canExecute() && vm.product.color">
+                <span class="input-label">Cor</span>
+                <span data-ng-bind="vm.product.color.name"></span>
+            </label>
+            <label class="item item-input" data-ng-show="vm.canExecute() && vm.product.size">
                 <span class="input-label">Tamanho</span>
-                <span data-ng-bind="vm.product.selectedSku.size"></span>
+                <span data-ng-bind="vm.product.size"></span>
             </label>
-            <label class="item item-input" data-ng-show="vm.product.selectedSku.scent">
+            <label class="item item-input" data-ng-show="vm.canExecute() && vm.product.scent">
                 <span class="input-label">Aroma</span>
-                <span data-ng-bind="vm.product.selectedSku.scent"></span>
+                <span data-ng-bind="vm.product.scent"></span>
             </label>
-            <label class="item item-input" data-ng-show="vm.product.selectedSku.price">
+            <label class="item item-input" data-ng-show="vm.product.price">
                 <span class="input-label">Preço</span>
-                <span data-ng-bind="vm.product.selectedSku.price | currency : 'R$ '"></span>
+                <span data-ng-bind="vm.product.price | currency : 'R$ '"></span>
             </label>
             <label class="item item-input" data-ng-show="vm.canEdit() && vm.product.sku">
                 <button class="button button-clear button-assertive" data-ng-click="vm.removeProduct();">

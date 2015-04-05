@@ -6,9 +6,9 @@
         var vm = this;
 
         vm.settings = {
-            useEcommerceName: settingsManager.getValue(settingsManager.settings.useEcommerceName) == 'false' ? false : true,
-            showPictures: settingsManager.getValue(settingsManager.settings.showPictures) == 'false' ? false : true,
-            onlinePictures: settingsManager.getValue(settingsManager.settings.onlinePictures) == 'false' ? false : true
+            useEcommerceNames: settingsManager.getValue(settingsManager.settings.useEcommerceNames),
+            showPictures: settingsManager.getValue(settingsManager.settings.showPictures),
+            onlinePictures: settingsManager.getValue(settingsManager.settings.onlinePictures)
         };
 
         vm.signout = function () {
@@ -20,8 +20,8 @@
             }, 'Sair');
         };
 
-        $scope.$watch('vm.settings.useEcommerceName', function (value) {
-            settingsManager.setValue(settingsManager.settings.useEcommerceName, value);
+        $scope.$watch('vm.settings.useEcommerceNames', function (value) {
+            settingsManager.setValue(settingsManager.settings.useEcommerceNames, value);
         });
 
         $scope.$watch('vm.settings.showPictures', function (value) {

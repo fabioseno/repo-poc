@@ -244,11 +244,6 @@ angular.module('replenishment').value('productData', [
             "G"
         ],
         "children": {
-            "537206261": {
-                "price": 59.90,
-                "color": "17-5335 TP",
-                "size": "PP"
-            },
             "537073541": {
                 "price": 59.90,
                 "color": "17-5335 TP",
@@ -292,7 +287,7 @@ angular.module('replenishment').value('productData', [
         },
         "colors": [
             {
-                "id": "17-5335 TP",
+                "id": "14-0837 TP",
                 "eCommerceColorName": "Amarelo",
                 "eCommerceUrl": "http://colorimg.lojasrenner.com.br/images/variant/imagecolors/536988336-14-0837%20TP.jpg",
                 "RMSColorName": "Verde Amarelo Nevoa",
@@ -311,37 +306,37 @@ angular.module('replenishment').value('productData', [
         "children": {
             "536988441": {
                 "price": 79.90,
-                "color": "17-5335 TP",
+                "color": "14-0837 TP",
                 "size": "36"
             },
             "536988344": {
                 "price": 79.90,
-                "color": "17-5335 TP",
+                "color": "14-0837 TP",
                 "size": "38"
             },
             "536988352": {
                 "price": 79.90,
-                "color": "17-5335 TP",
+                "color": "14-0837 TP",
                 "size": "40"
             },
             "536988361": {
                 "price": 79.90,
-                "color": "17-5335 TP",
+                "color": "14-0837 TP",
                 "size": "42"
             },
             "536988395": {
                 "price": 79.90,
-                "color": "17-5335 TP",
+                "color": "14-0837 TP",
                 "size": "44"
             },
             "536988416": {
                 "price": 79.90,
-                "color": "17-5335 TP",
+                "color": "14-0837 TP",
                 "size": "46"
             },
             "536988424": {
                 "price": 79.90,
-                "color": "17-5335 TP",
+                "color": "14-0837 TP",
                 "size": "48"
             }
         }

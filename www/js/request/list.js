@@ -2,17 +2,18 @@
 (function () {
 	'use strict';
 
-	function RequestList(requestManager, userManager, toaster) {
+	function RequestList($scope, $location, requestManager, userManager, toaster) {
 		var vm = this;
 
-		vm.showFilters = false;
+		vm.goTo = function (path) {
+			$location.path(path);
+		};
 
 		vm.loadRequests = function () {
 			vm.requests = requestManager.getList();
+			$scope.$broadcast('scroll.refreshComplete');
 		};
 		
-		vm.canSwipe = true;
-
 		vm.canCreateRequests = function () {
 			return (userManager.canCreateRequests());
 		};
@@ -25,7 +26,7 @@
 		}
 	}
 
-	RequestList.$inject = ['requestManager', 'userManager', 'toaster'];
+	RequestList.$inject = ['$scope', '$location', 'requestManager', 'userManager', 'toaster'];
 
 	angular.module('replenishment').controller('requestList', RequestList);
 

@@ -15,6 +15,10 @@ body {
     color: red;
 }
 
+.item-right input {
+	text-align: right;
+}
+
 /* Numeric selector */
 .quantity-selector button {
 	float: left;
@@ -52,7 +56,7 @@ body {
 	border-color: #d71920;
 }
 
-.custom-item .item-content, .item-radio .item-content {
+.item-content, .item-radio .item-content {
     padding: 16px !important;
 }
 
@@ -62,13 +66,17 @@ body {
     margin-bottom: 10px;
 }
 
+.product-header .reference {
+    font-size: 14px;
+}
+
 .product-body {
     white-space: normal;
-    clear: both;
+    	display: flex;
 }
 
 .product-body .details {
-    float: left;
+    flex: 1;
 }
 
 .inner-tabs {
@@ -88,7 +96,7 @@ body {
 }
 
 .image {
-    text-align: right;
+	text-align: center;
 }
 
 .image .product-small {

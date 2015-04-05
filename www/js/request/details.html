@@ -1,5 +1,5 @@
 <ion-view view-title="Solicitação" cache-view="false">
-    <ion-nav-buttons class="button button-clear button-positive" side="primary">
+	<ion-nav-buttons class="button button-clear button-positive" side="primary">
 		<a class="button button-clear" data-ng-click="vm.goBack();">voltar</a>
 	</ion-nav-buttons>
 	<ion-nav-buttons class="button button-clear button-positive" side="secondary">
@@ -17,17 +17,17 @@
 						<label>Status</label>
 						<span data-ng-bind="vm.request.status"></span>
 					</div>
-                    <div class="col field">
+					<div class="col field">
 						<label>Solicitante</label>
 						<span type="text" data-ng-bind="vm.request.createdBy"></span>
 					</div>
 				</div>
 				<div class="row">
-                    <div class="col field">
+					<div class="col field">
 						<label>Divisão/Grupo</label>
-						<span type="text">{{ vm.request.products | divisionName }}/{{ vm.request.products | groupName }}</span>
+						<span type="text">{{ vm.request.division }}/{{ vm.request.group }}</span>
 					</div>
-                    <div class="col field">
+					<div class="col field">
 						<label>Data</label>
 						<span type="text" data-ng-bind="vm.request.creationDate | date:'dd/MM/yy HH:mm'"></span>
 					</div>
@@ -43,27 +43,25 @@
 					Excluir solicitação
 				</a>
 			</div>
-			<div class="product-list">
-				<ion-list>
-					<ion-item class="custom-item" data-ng-repeat="product in vm.request.products track by $index" data-ng-click="vm.viewProduct(vm.request.id, product.sku);">
-                        <div class="product-header">
-                            <b><span data-ng-bind="product.name"></span></b>
-                        </div>
-                        <div class="product-body">
-                            <div class="details">
-                                <span data-ng-bind="product.division"></span>/<span data-ng-bind="product.group"></span><br />
-                                <span data-ng-bind="product.parentId"></span> - <span data-ng-bind="product.sku"></span><br />
-                                <span data-ng-bind="product.color"></span> - <span data-ng-bind="product.size"></span><br />
-                                <span data-ng-bind="product.colorId"></span><br />
-                                <span data-ng-bind="product.price | currency : 'R$ '"></span><br /><br />
-                                <span data-ng-bind="product.quantity"></span> unidade(s)
-                            </div>
-                            <div class="image">
-                                <img class="product-small" src="assets/img/vestido.jpg">
-                            </div>
-                        </div>
-					</ion-item>
-				</ion-list>
+			<div class="list product-list">
+				<div class="item" data-ng-repeat="product in vm.request.products | orderBy:['structure.division.name', 'structure.group.name', 'structure.department.id', 'structure.class.id', 'structure.subclass.id'] track by $index" data-ng-click="vm.viewProduct(vm.request.id, product.sku);">
+					<div class="product-header item-text-wrap">
+						<b><span data-ng-bind="product.name"></span></b><br />
+						<span class="reference">{{  product.productCode}} - {{ product.sku }}</span>
+					</div>
+					<div class="product-body">
+						<div class="details">
+							<span data-ng-bind="product.structure.division.name"></span>/<span data-ng-bind="product.structure.group.name"></span><br />
+							<span data-ng-bind="product.color.name"></span> - <span data-ng-bind="product.size"></span><br />
+							<span data-ng-bind="product.color.id"></span><br />
+							<span data-ng-bind="product.price | currency : 'R$ '"></span><br /><br />
+							<span data-ng-bind="product.quantity"></span> unidade(s)
+						</div>
+						<div class="image">
+							<img class="product-small" data-ng-src="{{ product.pictureUrl }}">
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 	</ion-content>

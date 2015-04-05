@@ -6,7 +6,7 @@ angular.module('replenishment').service('toaster', ['$ionicLoading', function ($
 		$ionicLoading.show({
 			template: message,
 			noBackdrop: true,
-			duration: 1500
+			duration: 1000
 		});
 	};
 }]);
