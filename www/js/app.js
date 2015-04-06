@@ -22,8 +22,11 @@ angular.module('replenishment', ['ionic', 'wt-core']).run(
 			}
 		});
 	}
-).config(function ($stateProvider, $urlRouterProvider) {
+).config(function ($stateProvider, $urlRouterProvider, $ionicConfigProvider) {
 	'use strict';
+    
+    $ionicConfigProvider.views.maxCache(0);
+    $ionicConfigProvider.views.swipeBackEnabled(false);
 
 	// Ionic uses AngularUI Router which uses the concept of states
 	// Learn more here: https://github.com/angular-ui/ui-router
@@ -41,7 +44,7 @@ angular.module('replenishment', ['ionic', 'wt-core']).run(
 	}).state('app.tab', {
 		url: '',
 		abstract: true,
-		templateUrl: 'templates/tabs.html'
+		templateUrl: 'js/container/tabs.html'
 	}).state('app.tab.requests', {
 		url: '/requests',
 		views: {
@@ -82,21 +85,21 @@ angular.module('replenishment', ['ionic', 'wt-core']).run(
 				controller: 'productDetails as vm'
 			}
 		}
-	}).state('app.tab.setup', {
-		url: '/setup',
-		views: {
-			'tab-setup': {
-				templateUrl: 'js/setup/setup.html'
-			}
-		}
-	}).state('app.tab.test-products', {
-		url: '/setup/test-products',
-		views: {
-			'tab-chats': {
-				templateUrl: 'js/setup/products.html',
-				controller: 'setupData'
-			}
-		}
+//	}).state('app.tab.setup', {
+//		url: '/setup',
+//		views: {
+//			'tab-setup': {
+//				templateUrl: 'js/setup/setup.html'
+//			}
+//		}
+//	}).state('app.tab.test-products', {
+//		url: '/setup/test-products',
+//		views: {
+//			'tab-chats': {
+//				templateUrl: 'js/setup/products.html',
+//				controller: 'setupData'
+//			}
+//		}
 	}).state('app.tab.settings', {
 		url: '/settings',
 		views: {

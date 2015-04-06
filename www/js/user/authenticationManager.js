@@ -5,26 +5,27 @@ angular.module('replenishment').service('authenticationManager', ['localStorageP
     var self = this;
 
     self.signin = function (login, password) {
-        var i, found = false, user;
+        var i, user;
 
         for (i = 0; i < users.length; i += 1) {
             user = users[i];
 
             if (user.login === login) {
-                found = true;
                 localStorageProxy.add('USER_LOGIN', user.login);
                 localStorageProxy.add('USER_ROLE', user.role);
+                localStorageProxy.add('USER_NAME', user.name);
 
-                break;
+                return user;
             }
         }
 
-        return found;
+        return;
     };
 
     self.signout = function () {
         localStorageProxy.remove('USER_LOGIN');
         localStorageProxy.remove('USER_ROLE');
+        localStorageProxy.remove('USER_NAME');
     };
 
 }]);

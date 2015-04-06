@@ -15,6 +15,18 @@
 			return requestManager.canExecute(vm.request);
 		};
         
+        vm.isDraft = function () {
+            return (vm.request.status === requestManager.status.draft);
+        };
+        
+        vm.isExecutionView = function () {
+            return requestManager.isExecutionView(vm.request);
+		};
+        
+        vm.getStatus = function () {
+            return productManager.getStatus(vm.product);
+        };
+        
         vm.findByParentId = function () {
             var products = productManager.findByParentId(vm.product.parentId);
         };

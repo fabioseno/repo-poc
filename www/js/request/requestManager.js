@@ -5,15 +5,27 @@ angular.module('replenishment').service('requestManager', ['$filter', 'localStor
 	var self = this,
 		requests;
 
-
-	self.status = {
+    self.status = {
 		draft: 'Rascunho',
 		pending: 'Pendente',
 		inSeparation: 'Em separação',
 		separated: 'Separado',
-		inStockRepleshment: 'Em reposição',
 		finished: 'Finalizado'
 	};
+
+	function getRelevantDate(request) {
+        switch (request.status) {
+        case self.status.draft:
+            return request.creationDate;
+        case self.status.pending:
+        case self.status.inSeparation:
+            return request.pendingStatusDate;
+        case self.status.separated:
+            return request.separatedStatusDate;
+        case self.status.finished:
+            return '';
+        }
+    }
 
 	self.canEdit = function (request) {
 		return (userManager.getUserRole().id === userManager.roles.salesAssistant.id
@@ -22,12 +34,25 @@ angular.module('replenishment').service('requestManager', ['$filter', 'localStor
 
 	self.canExecute = function (request) {
 		return (userManager.getUserRole().id === userManager.roles.stockAssistant.id
-				&& (!request || !request.id || (request.id && (request.status === self.status.pending || request.status === self.status.separated))));
+				&& (request && request.id && request.status === self.status.inSeparation));
 	};
 
 	self.canDelete = function (request) {
 		return (request && request.status === self.status.draft);
 	};
+
+	self.canChangeStatus = function (request) {
+        var hasProducts = (request.products.length > 0),
+            notFinished = (request.status !== self.status.finished),
+            roleId = userManager.getUserRole().id,
+            status = request.status,
+            salesAssistant = (roleId === userManager.roles.salesAssistant.id
+                              && (status === self.status.draft || status === self.status.separated)),
+            stockAssistant = (roleId === userManager.roles.stockAssistant.id
+                              && (status === self.status.pending || status === self.status.inSeparation));
+
+        return (hasProducts && notFinished && (salesAssistant || stockAssistant));
+    };
 
 	self.getList = function () {
 		var request,
@@ -41,7 +66,7 @@ angular.module('replenishment').service('requestManager', ['$filter', 'localStor
 		for (i = requests.length - 1; i >= 0; i -= 1) {
 			request = requests[i];
 
-			if (userManager.getUserRole().id === userManager.roles.stockAssistant.id && (request.status === self.status.draft || request.status === self.status.inStockRepleshment || requests[i].status === self.status.finished)) {
+			if (userManager.getUserRole().id === userManager.roles.stockAssistant.id && (request.status === self.status.draft  || requests[i].status === self.status.finished)) {
 				requests.splice(i, 1);
 			}
 		}
@@ -54,6 +79,7 @@ angular.module('replenishment').service('requestManager', ['$filter', 'localStor
 
 				newProduct = productManager.findBySku(product.sku);
 				newProduct.quantity = product.quantity;
+				newProduct.quantityFound = product.quantityFound;
 				newProduct.status = product.status;
 
 				request.products[j] = newProduct;
@@ -61,6 +87,7 @@ angular.module('replenishment').service('requestManager', ['$filter', 'localStor
 
 			request.division = $filter('divisionName')(request.products);
 			request.group = $filter('groupName')(request.products);
+            request.relevantDate = getRelevantDate(request);
 		}
 
 		return requests;
@@ -88,6 +115,7 @@ angular.module('replenishment').service('requestManager', ['$filter', 'localStor
 
 						newProduct = productManager.findBySku(product.sku);
 						newProduct.quantity = product.quantity;
+						newProduct.quantityFound = product.quantityFound;
 						newProduct.status = product.status;
 
 						selectedRequest.products[j] = newProduct;
@@ -95,7 +123,8 @@ angular.module('replenishment').service('requestManager', ['$filter', 'localStor
 
 					selectedRequest.division = $filter('divisionName')(selectedRequest.products);
 					selectedRequest.group = $filter('groupName')(selectedRequest.products);
-
+                    selectedRequest.relevantDate = getRelevantDate(selectedRequest);
+                    
 					break;
 				}
 			}
@@ -156,12 +185,15 @@ angular.module('replenishment').service('requestManager', ['$filter', 'localStor
 				selectedProduct = request.products[i];
 
 				if (selectedProduct.sku === product.sku) {
-					selectedProduct.status = product.status;
-					//                    selectedProduct.division = product.division;
-					//                    selectedProduct.group = product.group;
-					//                    selectedProduct.price = product.price;
-					selectedProduct.quantity = product.quantity;
-
+                    selectedProduct = {
+                        sku: product.sku,
+                        status: product.status,
+                        quantity: product.quantity,
+                        quantityFound: product.quantityFound
+                    };
+                    
+                    request.products[i] = selectedProduct;
+                    
 					message = 'Produto alterado com sucesso!';
 
 					productExists = true;
@@ -174,6 +206,7 @@ angular.module('replenishment').service('requestManager', ['$filter', 'localStor
 				request.products.push({
 					sku: product.sku,
 					quantity: product.quantity,
+					quantityFound: product.quantityFound,
 					status: product.status
 				});
 			}
@@ -228,8 +261,8 @@ angular.module('replenishment').service('requestManager', ['$filter', 'localStor
 
 		return selectedProduct;
 	};
-
-	self.getNextStatusAction = function (currentStatus) {
+    
+    self.getNextStatusAction = function (currentStatus) {
 		switch (currentStatus) {
 		case self.status.draft:
 			return 'Solicitar separação';
@@ -238,8 +271,6 @@ angular.module('replenishment').service('requestManager', ['$filter', 'localStor
 		case self.status.inSeparation:
 			return 'Finalizar separação';
 		case self.status.separated:
-			return 'Iniciar reposição';
-		case self.status.inStockRepleshment:
 			return 'Finalizar reposição';
 		}
 	};
@@ -257,7 +288,7 @@ angular.module('replenishment').service('requestManager', ['$filter', 'localStor
 			case self.status.draft:
 				if (userRoleId === userManager.roles.salesAssistant.id) {
 					request.status = self.status.pending;
-					request.pendingStatusDate = new Date();
+					request.pendingStatusDate = new Date().getTime();
 					permissionDenied = false;
 				}
 
@@ -265,7 +296,7 @@ angular.module('replenishment').service('requestManager', ['$filter', 'localStor
 			case self.status.pending:
 				//if (userRoleId === userManager.roles.stockAssistant.id) {
 				request.status = self.status.inSeparation;
-				request.inSeparationStatusDate = new Date();
+				request.inSeparationStatusDate = new Date().getTime();
 				permissionDenied = false;
 				//}
 
@@ -273,23 +304,15 @@ angular.module('replenishment').service('requestManager', ['$filter', 'localStor
 			case self.status.inSeparation:
 				//if (userRoleId === userManager.roles.stockAssistant.id) {
 				request.status = self.status.separated;
-				request.separatedStatusDate = new Date();
+				request.separatedStatusDate = new Date().getTime();
 				permissionDenied = false;
 				//}
 
 				break;
 			case self.status.separated:
 				if (userRoleId === userManager.roles.salesAssistant.id) {
-					request.status = self.status.inStockRepleshment;
-					request.replacingStatusDate = new Date();
-					permissionDenied = false;
-				}
-
-				break;
-			case self.status.inStockRepleshment:
-				if (userRoleId === userManager.roles.salesAssistant.id) {
 					request.status = self.status.finished;
-					request.replacedStatusDate = new Date();
+					request.replacedStatusDate = new Date().getTime();
 					permissionDenied = false;
 				}
 

@@ -2,18 +2,14 @@
 (function () {
 	'use strict';
 
-	function RequestDetails($location, $state, $stateParams, requestManager, toaster) {
+	function RequestDetails($location, $state, $stateParams, requestManager, productManager, toaster) {
 		var vm = this;
 
-		vm.loadRequest = function (requestId, openProductDetails) {
-			vm.request = requestManager.load(requestId);
+        vm.loadRequest = function (id, openProductDetails) {
+			vm.request = requestManager.load(id);
 
             if (vm.request) {
                 vm.updateStatusButtonLabel = requestManager.getNextStatusAction(vm.request.status);
-
-                if (openProductDetails && vm.request.products.length === 0) {
-                    $state.go('app.tab.products-new'); // repensar
-                }
             }
 		};
 
@@ -22,11 +18,20 @@
 				if (buttonIndex === 1) {
 					requestManager.moveToNextStatus(vm.request);
 
-					toaster.show('Tarefa concluída com sucesso!');
-					$state.go('app.tab.requests');
+                    if (vm.request.status !== requestManager.status.pending) {
+                        toaster.show('Tarefa concluída com sucesso!');
+                        $state.go('app.tab.requests');
+                    } else {
+                        vm.loadRequest(vm.request.id, false);
+                        toaster.show('Separação iniciada!');
+                    }
 				}
 			}, 'Concluir tarefa');
 		};
+        
+        vm.getStatus = function (product) {
+            return productManager.getStatus(product);
+        };
 
 		vm.canDelete = function (request) {
 			return requestManager.canDelete(request);
@@ -48,7 +53,7 @@
         };
 
 		vm.enableStatusButton = function () {
-			return (vm.request.products.length > 0 && vm.request.status !== requestManager.status.finished);
+            return requestManager.canChangeStatus(vm.request);
 		};
 
 		vm.canEdit = function () {
@@ -70,7 +75,7 @@
 		vm.loadRequest($stateParams.id, true);
 	}
 
-	RequestDetails.$inject = ['$location', '$state', '$stateParams', 'requestManager', 'toaster'];
+	RequestDetails.$inject = ['$location', '$state', '$stateParams', 'requestManager', 'productManager', 'toaster'];
 
 	angular.module('replenishment').controller('requestDetails', RequestDetails);
 

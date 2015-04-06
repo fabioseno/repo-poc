@@ -30,4 +30,8 @@ angular.module('replenishment').service('userManager', ['localStorageProxy', fun
     self.getUserLogin = function () {
         return localStorageProxy.get('USER_LOGIN');
 	};
+    
+    self.getUserName = function () {
+		return localStorageProxy.get('USER_NAME');
+	};
 }]);

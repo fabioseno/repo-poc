@@ -106,6 +106,24 @@ angular.module('replenishment').service('productManager', ['authentication', 'se
 			scent: getScent(product.scents, skuData.scent)
 		};
 	}
+    
+    self.status = {
+        pending: 'Pendente',
+        partial: 'Parcial',
+        completed: 'Separado'
+    };
+    
+    self.getStatus = function (product) {
+        if (product.quantityFound === undefined) {
+            return self.status.pending;
+        }
+        
+        if (product.quantityFound >= product.quantity) {
+            return self.status.completed;
+        } else {
+            return self.status.partial;
+        }
+    };
 
 	self.findByParentId = function (productCode) {
 		var i, j, product;

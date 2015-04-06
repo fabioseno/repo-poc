@@ -2,6 +2,7 @@
 angular.module('replenishment').constant('userData', [
 	{
 		login: 'ana',
+        name: 'Ana Paula Franciosi',
 		password: 'ana',
 		role: {
 			id: 'sales-assistant',
@@ -10,6 +11,7 @@ angular.module('replenishment').constant('userData', [
 	},
 	{
 		login: 'fabio',
+        name: 'Fábio Akira Yoshida',
 		password: 'fabio',
 		role: {
 			id: 'stock-assistant',
@@ -18,6 +20,7 @@ angular.module('replenishment').constant('userData', [
 	},
 	{
 		login: 'fabi',
+        name: 'Fabiana Piva Brum',
 		password: 'fabi',
 		role: {
 			id: 'store-manager',

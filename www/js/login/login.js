@@ -8,16 +8,16 @@
 
 		vm.signin = function () {
 			if (vm.loginForm.$valid) {
-				var found = false;
+				var user;
                 
-                found = authenticationManager.signin(vm.login, vm.password);
+                user = authenticationManager.signin(vm.login, vm.password);
 				
-				if (!found) {
+				if (!user) {
 					toaster.show('Login/senha inválido!');
 				} else {
                     $state.go('app.tab.requests');
 
-					toaster.show('Bem-vinda(o), ' + vm.login);
+					toaster.show('Bem-vinda(o), ' + user.name);
                 }
 			}
 		};

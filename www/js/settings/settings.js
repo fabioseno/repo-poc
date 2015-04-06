@@ -2,8 +2,12 @@
 (function () {
     'use strict';
 
-    function Settings($scope, $location, authenticationManager, settingsManager) {
+    function Settings($scope, $location, authenticationManager, settingsManager, userManager) {
         var vm = this;
+        
+        vm.getUserName = function () {
+            return userManager.getUserName();
+        };
 
         vm.settings = {
             useEcommerceNames: settingsManager.getValue(settingsManager.settings.useEcommerceNames),
@@ -33,7 +37,7 @@
         });
     }
 
-    Settings.$inject = ['$scope', '$location', 'authenticationManager', 'settingsManager'];
+    Settings.$inject = ['$scope', '$location', 'authenticationManager', 'settingsManager', 'userManager'];
 
     angular.module('replenishment').controller('settings', Settings);
 
