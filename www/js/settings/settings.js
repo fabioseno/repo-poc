@@ -2,7 +2,7 @@
 (function () {
     'use strict';
 
-    function Settings($scope, $location, authenticationManager, settingsManager, userManager) {
+    function Settings($scope, $location, authenticationManager, requestManager, settingsManager, userManager) {
         var vm = this;
         
         vm.getUserName = function () {
@@ -14,14 +14,18 @@
             showPictures: settingsManager.getValue(settingsManager.settings.showPictures),
             onlinePictures: settingsManager.getValue(settingsManager.settings.onlinePictures)
         };
+        
+        vm.resetRequests = function () {
+            requestManager.resetRequests();
+        };
 
         vm.signout = function () {
-            navigator.notification.confirm('Deseja realmente sair?', function (buttonIndex) {
-                if (buttonIndex === 1) {
-                    authenticationManager.signout();
+//            navigator.notification.confirm('Deseja realmente sair?', function (buttonIndex) {
+//                if (buttonIndex === 1) {
                     $location.path('/');
-                }
-            }, 'Sair');
+                    authenticationManager.signout();
+//                }
+//            }, 'Sair');
         };
 
         $scope.$watch('vm.settings.useEcommerceNames', function (value) {
@@ -37,7 +41,7 @@
         });
     }
 
-    Settings.$inject = ['$scope', '$location', 'authenticationManager', 'settingsManager', 'userManager'];
+    Settings.$inject = ['$scope', '$location', 'authenticationManager', 'requestManager', 'settingsManager', 'userManager'];
 
     angular.module('replenishment').controller('settings', Settings);
 

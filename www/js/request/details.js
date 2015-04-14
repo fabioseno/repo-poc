@@ -13,42 +13,67 @@
             }
 		};
 
-		vm.changeStatus = function () {
-			navigator.notification.confirm('Confirma operação?', function (buttonIndex) {
-				if (buttonIndex === 1) {
-					requestManager.moveToNextStatus(vm.request);
+		vm.canDelete = function (request) {
+			return requestManager.canDelete(request);
+		};
 
-                    if (vm.request.status !== requestManager.status.pending) {
-                        toaster.show('Tarefa concluída com sucesso!');
-                        $state.go('app.tab.requests');
-                    } else {
-                        vm.loadRequest(vm.request.id, false);
-                        toaster.show('Separação iniciada!');
-                    }
-				}
-			}, 'Concluir tarefa');
+		vm.canExecute = function () {
+            return requestManager.canExecute(vm.request);
+        };
+
+        vm.isDraft = function () {
+            return (!vm.request || (vm.request && vm.request.status.id === requestManager.status.draft.id));
+        };
+        
+        vm.isPending = function () {
+            return (!vm.request || (vm.request && vm.request.status.id === requestManager.status.pending.id));
+        };
+
+        vm.changeStatus = function () {
+//			navigator.notification.confirm('Confirma operação?', function (buttonIndex) {
+//				if (buttonIndex === 1) {
+            requestManager.moveToNextStatus(vm.request);
+
+            if (vm.request.status.id !== requestManager.status.pending.id) {
+                toaster.show('Tarefa concluída com sucesso!');
+                $state.go('app.tab.requests');
+            } else {
+                vm.loadRequest(vm.request.id, false);
+                toaster.show('Separação iniciada!');
+            }
+//				}
+//			}, 'Concluir tarefa');
+		};
+        
+        vm.deleteRequest = function () {
+//			navigator.notification.confirm('Deseja excluir a solicitação?', function (buttonIndex) {
+//				if (buttonIndex === 1) {
+            requestManager.deleteRequest(vm.request.id);
+            $state.go('app.tab.requests');
+
+            toaster.show('Solicitação excluída com sucesso!');
+//				}
+//			}, 'Excluir solicitação');
 		};
         
         vm.getStatus = function (product) {
             return productManager.getStatus(product);
         };
-
-		vm.canDelete = function (request) {
-			return requestManager.canDelete(request);
-		};
-
-		vm.deleteRequest = function () {
-			navigator.notification.confirm('Deseja excluir a solicitação?', function (buttonIndex) {
-				if (buttonIndex === 1) {
-					requestManager.deleteRequest(vm.request.id);
-					$state.go('app.tab.requests');
-
-					toaster.show('Solicitação excluída com sucesso!');
-				}
-			}, 'Excluir solicitação');
-		};
         
-        vm.viewProduct = function (requestId, productId) {
+        vm.getColorStatus = function (product) {
+            var status = vm.getStatus(product);
+            
+            switch (status) {
+            case 'Separado':
+                return 'product-status-attended';
+            case 'Parcial':
+                return 'product-status-partially-attended';
+            default:
+                return 'product-status-not-attended';
+            }
+        };
+
+		vm.viewProduct = function (requestId, productId) {
             $location.path('/request/' + requestId + '/product/' + productId);
         };
 
@@ -61,7 +86,7 @@
 		};
         
         vm.goBack = function () {
-            $location.path('/requests');
+            $location.url('/requests');
         };
 		
 		vm.addProduct = function () {

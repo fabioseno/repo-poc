@@ -8,11 +8,11 @@ angular.module('replenishment').filter('groupName', function () {
         
         if (products) {
             for (i = 0; i < products.length; i += 1) {
-				if (!name) {
+				if (!name && products[i].structure) {
 					name = products[i].structure.group.name;
 				}
 				
-                if (name !== products[i].structure.group.name) {
+                if (products[i].structure && name !== products[i].structure.group.name) {
                     name = 'Várias';
                     break;
                 }

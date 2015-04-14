@@ -1,5 +1,5 @@
 /*global angular*/
-angular.module('replenishment').service('authenticationManager', ['localStorageProxy', 'userData', function (localStorageProxy, users) {
+angular.module('replenishment').service('authenticationManager', ['sessionStorageProxy', 'userData', function (sessionStorageProxy, users) {
     'use strict';
 
     var self = this;
@@ -11,9 +11,10 @@ angular.module('replenishment').service('authenticationManager', ['localStorageP
             user = users[i];
 
             if (user.login === login) {
-                localStorageProxy.add('USER_LOGIN', user.login);
-                localStorageProxy.add('USER_ROLE', user.role);
-                localStorageProxy.add('USER_NAME', user.name);
+                sessionStorageProxy.add('USER_LOGIN', user.login);
+                sessionStorageProxy.add('USER_ROLE', user.role);
+                sessionStorageProxy.add('USER_NAME', user.name);
+                sessionStorageProxy.remove('FILTER');
 
                 return user;
             }
@@ -23,9 +24,10 @@ angular.module('replenishment').service('authenticationManager', ['localStorageP
     };
 
     self.signout = function () {
-        localStorageProxy.remove('USER_LOGIN');
-        localStorageProxy.remove('USER_ROLE');
-        localStorageProxy.remove('USER_NAME');
+        sessionStorageProxy.remove('USER_LOGIN');
+        sessionStorageProxy.remove('USER_ROLE');
+        sessionStorageProxy.remove('USER_NAME');
+        sessionStorageProxy.remove('FILTER');
     };
 
 }]);

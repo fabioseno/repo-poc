@@ -10,13 +10,16 @@
             <ion-toggle ng-model="vm.settings.onlinePictures">
                 Fotos online
             </ion-toggle>
-            <div class="item item-divider" data-ng-click="showFilter = !showFilter">
-                
+            <div class="item item-divider">
             </div>
-            <label class="item item-input">
+            <div class="item item-input">
+                <span class="input-label">Solicitações</span>
+                <a class="logoff" data-ng-click="vm.resetRequests();">Limpar</a>
+            </div>
+            <div class="item item-input">
                 <span class="input-label" data-ng-bind="vm.getUserName();"></span>
                 <a class="logoff" data-ng-click="vm.signout();">Sair</a>
-            </label>
+            </div>
         </div>
     </ion-content>
 </ion-view>

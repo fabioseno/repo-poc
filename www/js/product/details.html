@@ -3,7 +3,7 @@
         <button class="button button-clear" nav-direction="back" data-ng-click="vm.goBack();">voltar</button>
     </ion-nav-buttons>
     <ion-nav-buttons class="button button-clear button-positive" side="secondary">
-        <button class="button button-clear" nav-direction="forward" data-ng-click="vm.save();">salvar</button>
+        <button class="button button-clear" nav-direction="forward" data-ng-click="vm.save();" data-ng-show="vm.canEdit() || vm.canExecute()">salvar</button>
     </ion-nav-buttons>
     <ion-content>
         <div class="list" data-ng-show="vm.canEdit()">
@@ -11,39 +11,37 @@
                 <span class="input-label">Código pai</span>
                 <input type="tel" placeholder="Código pai" data-ng-model="vm.product.productCode" ng-change="vm.findByParentId()" ng-model-options="{updateOn: 'blur'}" data-ng-readonly="!vm.canEdit()" />
             </label>
-            <label class="item item-input">
+            <div class="item item-input item-icon-right">
                 <span class="input-label">SKU</span>
                 <input type="tel" placeholder="SKU" data-ng-model="vm.product.sku" data-ng-change="vm.findByChildId()" ng-model-options="{updateOn: 'blur'}" data-ng-readonly="!vm.canEdit()"  />
-            </label>
+                <i class="icon ion-search" data-ng-click="vm.selectProduct();"></i>
+            </div>
             <div class="item item-input" data-ng-show="vm.canEdit()">
                 <span class="input-label">Quantidade</span>
                 <div data-numeric-selector data-quantity="vm.product.quantity"></div>
             </div>
             <label class="item item-input" data-ng-show="vm.product.colors && vm.product.colors.length">
-                <span class="input-label">Cor</span>
-                <ion-scroll zooming="true" direction="x" style="height: 40px">
-                    <ul>
-                        <li data-ng-repeat="color in vm.product.colors">
+                <ion-scroll zooming="true" direction="x" scroll-size2 length="vm.product.colors.length" item-width="60" margin-size="5">
+                    <div class="attributes">
+                        <div class="attribute" data-ng-repeat="color in vm.product.colors">
+                            <img class="color" data-ng-src="{{ color.url }}">
                             <span data-ng-bind="color.name"></span>
-                            <span data-ng-bind="color.id"></span>
-                        </li>
-                    </ul>
+                        </div>
+                    </div>
                 </ion-scroll>
             </label>
             <label class="item item-input" data-ng-show="vm.product.sizes && vm.product.sizes.length > 0">
-                <span class="input-label">Tamanho</span>
-                <ion-scroll zooming="true" direction="x" style="height: 40px">
-                    <ul>
-                        <li data-ng-repeat="size in vm.product.sizes">
-                            <span data-ng-bind="size"></span>
-                        </li>
-                    </ul>
+                <ion-scroll zooming="true" direction="x" style="height:65px">
+                    <div class="attributes" scroll-size length="{{ vm.product.sizes.length}}" item-width="50" margin-size="5">
+                        <div class="attribute" data-ng-repeat="size in vm.product.sizes">
+                            <div class="size" data-ng-bind="size"></div>
+                        </div>
+                    </div>
                 </ion-scroll>
             </label>
             <label class="item item-input" data-ng-show="vm.product.scents && vm.product.scents.length > 0">
-                <span class="input-label">Aroma</span>
-                <ion-scroll zooming="true" direction="x" style="height: 40px">
-                    <ul>
+                <ion-scroll zooming="true" direction="x">
+                    <ul class="attributes">
                         <li data-ng-repeat="scent in vm.product.scents">
                             <span data-ng-bind="scent"></span>
                         </li>
@@ -63,7 +61,7 @@
                 <span class="input-label">Separado(s)</span>
                 <div data-numeric-selector data-quantity="vm.product.quantityFound"></div>
             </div>
-            <div class="item item-input" data-ng-show="!vm.canExecute() && !vm.isDraft()">
+            <div class="item item-input" data-ng-show="!vm.canExecute() && !vm.isDraft() && !vm.isPending()">
                 <span class="input-label">Separado(s)</span>
                 <b><span data-ng-bind="vm.product.quantityFound"></span></b>
             </div>
@@ -74,15 +72,15 @@
                 <span class="input-label">Categoria</span>
                 <span>{{ vm.product.structure.division.name }} / {{ vm.product.structure.group.name }}</span>
             </label>
-            <label class="item item-input" data-ng-show="!vm.canEdit() && vm.product.color">
+            <label class="item item-input" data-ng-show="vm.product.color">
                 <span class="input-label">Cor</span>
                 <span data-ng-bind="vm.product.color.name"></span>
             </label>
-            <label class="item item-input" data-ng-show="!vm.canEdit() && vm.product.size">
+            <label class="item item-input" data-ng-show="vm.product.size">
                 <span class="input-label">Tamanho</span>
                 <span data-ng-bind="vm.product.size"></span>
             </label>
-            <label class="item item-input" data-ng-show="!vm.canEdit() && vm.product.scent">
+            <label class="item item-input" data-ng-show="vm.product.scent">
                 <span class="input-label">Aroma</span>
                 <span data-ng-bind="vm.product.scent"></span>
             </label>

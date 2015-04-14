@@ -15,7 +15,7 @@
 					</div>
 					<div class="col field">
 						<label>Status</label>
-						<span data-ng-bind="vm.request.status"></span>
+						<span data-ng-bind="vm.request.status.name"></span>
 					</div>
 					<div class="col field">
 						<label>Solicitante</label>
@@ -33,19 +33,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="item inner-tabs tabs tabs-secondary tabs-icon-left" data-ng-show="vm.enableStatusButton() || vm.canDelete(vm.request)">
-				<a class="tab-item inner-tab-item" data-ng-click="vm.changeStatus();" data-ng-show="vm.enableStatusButton();">
-					<i class="icon ion-checkmark-circled"></i>
-					<span data-ng-bind="vm.updateStatusButtonLabel"></span>
-				</a>
-				<a class="tab-item inner-tab-item" data-ng-click="vm.deleteRequest();" data-ng-show="vm.canDelete(vm.request);">
-					<i class="icon ion-close-circled"></i>
-					Excluir solicitação
-				</a>
+			<div class="item inner-tabs tabs tabs-secondary" data-ng-show="vm.enableStatusButton() || vm.canDelete(vm.request)">
+                <button class="inner-tab-item button button button-clear button-positive" data-ng-bind="vm.updateStatusButtonLabel" data-ng-click="vm.changeStatus();" data-ng-show="vm.enableStatusButton();"></button>
+                <button class="inner-tab-item button button-clear button-assertive" data-ng-click="vm.deleteRequest();" data-ng-show="vm.canDelete(vm.request);">Excluir solicitação</button>
 			</div>
 			<div class="list product-list">
-				<div class="item" data-ng-repeat="product in vm.request.products | orderBy:['structure.division.name', 'structure.group.name', 'structure.department.id', 'structure.class.id', 'structure.subclass.id'] track by $index" data-ng-click="vm.viewProduct(vm.request.id, product.sku);">
-                    <div class="product-status" data-ng-class="{ 'product-status-done' : vm.getStatus(product) === 'Separado',  'product-status-pending' :  vm.getStatus(product) !== 'Separado' && vm.request.status !== 'Rascunho'} ">
+				<div class="item" data-ng-repeat="product in vm.request.products | orderBy:['structure.division.name', 'structure.group.name', 'productCode', 'structure.subclass.id', 'structure.class.id', 'structure.department.id'] track by $index" data-ng-click="vm.viewProduct(vm.request.id, product.sku);">
+                    <div class="product-status" data-ng-class="vm.getColorStatus(product);">
                     </div>
 					<div class="product-header item-text-wrap">
 						<b><span data-ng-bind="product.name"></span></b><br />
@@ -53,12 +47,11 @@
 					</div>
 					<div class="product-body">
 						<div class="details">
-							<span data-ng-bind="product.structure.division.name"></span>/<span data-ng-bind="product.structure.group.name"></span><br />
+							<span data-ng-bind="product.structure.division.name"></span> / <span data-ng-bind="product.structure.group.name"></span><br />
 							<span data-ng-bind="product.color.name"></span> - <span data-ng-bind="product.size"></span><br />
-							<span data-ng-bind="product.color.id"></span><br />
 							<span data-ng-bind="product.price | currency : 'R$ '"></span><br /><br />
 							<span>{{ product.quantity }} solicitado(s)</span><br />
-                            <span data-ng-show="vm.getStatus(product) !== 'Pendente'">{{ product.quantityFound }} separado(s)</span>
+                            <span data-ng-show="!vm.isDraft() && !vm.isPending()">{{ product.quantityFound }} separado(s)</span>
 						</div>
 						<div class="image">
 							<img class="product-small" data-ng-src="{{ product.pictureUrl }}">

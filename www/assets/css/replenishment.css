@@ -10,6 +10,7 @@ body {
     vertical-align: top;
 }
 
+/* Settings */
 .logoff {
     text-decoration: none;
     color: red;
@@ -73,11 +74,15 @@ body {
     border-left: 30px solid transparent;
 }
 
-.product-status-pending {
+.product-status-not-attended {
     border-top: 30px solid red;
 }
 
-.product-status-done {
+.product-status-partially-attended {
+    border-top: 30px solid #f0b840;
+}
+
+.product-status-attended {
     border-top: 30px solid green;
 }
 
@@ -110,8 +115,8 @@ body {
 }
 
 .inner-tab-item {
-    color: rgba(0, 0, 0, 0.8) !important;
-    font-size: 13px !important;
+    font-size: 14px !important;
+    font-weight: bold;
 }
 
 .product-list {
@@ -158,3 +163,40 @@ div.page header.login {
 #login header {
     background: #d71920 url('../img/logo.png') no-repeat center center;
 }
+
+/* Attributes */
+div.attributes {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    align-content: center;
+    vertical-align: middle;
+    margin: 6px 0px;
+}
+
+div.attributes .attribute {
+    float: left;
+    margin-right: 5px;
+    text-align: center;
+}
+
+div.attributes .color {
+    width: 60px;
+    height: 60px;
+    border-radius: 10px;
+    display: block;
+    font-size: 14px;
+}
+
+div.attributes .size {
+    width: 50px;
+    height: 50px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 48px;
+}
+
+/*
+selected
+1px solid #ce0415;*/

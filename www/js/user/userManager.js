@@ -1,5 +1,5 @@
 /*global angular*/
-angular.module('replenishment').service('userManager', ['localStorageProxy', function userManager(localStorageProxy) {
+angular.module('replenishment').service('userManager', ['sessionStorageProxy', function userManager(sessionStorageProxy) {
 	'use strict';
 
 	var self = this;
@@ -24,14 +24,14 @@ angular.module('replenishment').service('userManager', ['localStorageProxy', fun
 	};
 
 	self.getUserRole = function () {
-		return localStorageProxy.get('USER_ROLE');
+		return sessionStorageProxy.get('USER_ROLE');
 	};
     
     self.getUserLogin = function () {
-        return localStorageProxy.get('USER_LOGIN');
+        return sessionStorageProxy.get('USER_LOGIN');
 	};
     
     self.getUserName = function () {
-		return localStorageProxy.get('USER_NAME');
+		return sessionStorageProxy.get('USER_NAME');
 	};
 }]);
