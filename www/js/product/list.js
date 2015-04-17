@@ -8,6 +8,32 @@
         vm.loadProducts = function () {
             vm.products = productManager.getProducts();
         };
+        
+        vm.getDivisions = function () {
+            var divisions = [],
+                products = productManager.getProducts(),
+                found = false,
+                i,
+                j;
+            
+            for (i = 0; i < products.length; i += 1) {
+                found = false;
+                
+                for (j = 0; j < divisions.length; j += 1) {
+                    if (products[i].structure.division.name === divisions[j].name) {
+                        found = true;
+                        break;
+                    }
+                }
+                
+                if (!found) {
+                    divisions.push(products[i].structure.division);
+                }
+            }
+            
+            vm.divisions = divisions;
+            vm.loadProducts();
+        };
 
         vm.goBack = function () {
             var url = '';
@@ -45,7 +71,7 @@
             $location.url(url);
         };
 
-        vm.loadProducts();
+        vm.getDivisions();
     }
 
     ProductList.$inject = ['$location', '$stateParams', 'productManager'];

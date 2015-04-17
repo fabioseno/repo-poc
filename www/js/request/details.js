@@ -2,7 +2,7 @@
 (function () {
 	'use strict';
 
-	function RequestDetails($location, $state, $stateParams, requestManager, productManager, toaster) {
+	function RequestDetails($scope, $location, $state, $stateParams, requestManager, productManager, toaster) {
 		var vm = this;
 
         vm.loadRequest = function (id, openProductDetails) {
@@ -28,32 +28,40 @@
         vm.isPending = function () {
             return (!vm.request || (vm.request && vm.request.status.id === requestManager.status.pending.id));
         };
+        
+        vm.isFinished = function () {
+            return (!vm.request || (vm.request && vm.request.status.id === requestManager.status.finished.id));
+        };
 
         vm.changeStatus = function () {
-//			navigator.notification.confirm('Confirma operação?', function (buttonIndex) {
-//				if (buttonIndex === 1) {
-            requestManager.moveToNextStatus(vm.request);
+			navigator.notification.confirm('Confirma operação?', function (buttonIndex) {
+				if (buttonIndex === 1) {
+                    $scope.$apply(function () {
+                        requestManager.moveToNextStatus(vm.request);
 
-            if (vm.request.status.id !== requestManager.status.pending.id) {
-                toaster.show('Tarefa concluída com sucesso!');
-                $state.go('app.tab.requests');
-            } else {
-                vm.loadRequest(vm.request.id, false);
-                toaster.show('Separação iniciada!');
-            }
-//				}
-//			}, 'Concluir tarefa');
+                        if (vm.request.status.id !== requestManager.status.pending.id) {
+                            toaster.show('Tarefa concluída com sucesso!');
+                            $state.go('app.tab.requests');
+                        } else {
+                            vm.loadRequest(vm.request.id, false);
+                            toaster.show('Separação iniciada!');
+                        }
+                    });
+				}
+			}, 'Concluir tarefa');
 		};
         
         vm.deleteRequest = function () {
-//			navigator.notification.confirm('Deseja excluir a solicitação?', function (buttonIndex) {
-//				if (buttonIndex === 1) {
-            requestManager.deleteRequest(vm.request.id);
-            $state.go('app.tab.requests');
+			navigator.notification.confirm('Deseja excluir a solicitação?', function (buttonIndex) {
+				if (buttonIndex === 1) {
+                    $scope.$apply(function () {
+                        requestManager.deleteRequest(vm.request.id);
+                        $state.go('app.tab.requests');
 
-            toaster.show('Solicitação excluída com sucesso!');
-//				}
-//			}, 'Excluir solicitação');
+                        toaster.show('Solicitação excluída com sucesso!');
+                    });
+				}
+			}, 'Excluir solicitação');
 		};
         
         vm.getStatus = function (product) {
@@ -100,7 +108,7 @@
 		vm.loadRequest($stateParams.id, true);
 	}
 
-	RequestDetails.$inject = ['$location', '$state', '$stateParams', 'requestManager', 'productManager', 'toaster'];
+	RequestDetails.$inject = ['$scope', '$location', '$state', '$stateParams', 'requestManager', 'productManager', 'toaster'];
 
 	angular.module('replenishment').controller('requestDetails', RequestDetails);
 

@@ -9,6 +9,10 @@
 			$location.url(path);
 		};
         
+        vm.isFinished = function () {
+            return (!vm.request || (vm.request && vm.request.status.id === requestManager.status.finished.id));
+        };
+        
         vm.bindStatusList = function () {
             vm.statusList = requestManager.getStatusList();
         };

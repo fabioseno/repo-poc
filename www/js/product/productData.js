@@ -70,12 +70,12 @@ angular.module('replenishment').value('productData', [
             "537478451": {
                 "price": 89.90,
                 "color": "18-3949 TP",
-                "size": "PP"
+                "size": "P"
             },
             "537478531": {
                 "price": 89.90,
                 "color": "12-0740 TP",
-                "size": "PP"
+                "size": "P"
             },
             "537478506": {
                 "price": 89.90,

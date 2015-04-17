@@ -84,10 +84,6 @@ angular.module('replenishment').value('requestData', [
                 "quantity": 1
             },
             {
-                "sku": "537112424",
-                "quantity": 1
-            },
-            {
                 "sku": "537200619",
                 "quantity": 1
             },

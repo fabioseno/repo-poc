@@ -16,16 +16,24 @@
         };
         
         vm.resetRequests = function () {
-            requestManager.resetRequests();
+//            navigator.notification.confirm('Deseja limpar as solicitações?', function (buttonIndex) {
+//                if (buttonIndex === 1) {
+                    //$scope.$apply(function () {
+                        requestManager.resetRequests();
+                    //});
+//                }
+//            }, 'Limpar');
         };
 
         vm.signout = function () {
-//            navigator.notification.confirm('Deseja realmente sair?', function (buttonIndex) {
-//                if (buttonIndex === 1) {
-                    $location.path('/');
-                    authenticationManager.signout();
-//                }
-//            }, 'Sair');
+            navigator.notification.confirm('Deseja realmente sair?', function (buttonIndex) {
+                if (buttonIndex === 1) {
+                    $scope.$apply(function () {
+                        $location.path('/login');
+                        authenticationManager.signout();
+                    });
+                }
+            }, 'Sair');
         };
 
         $scope.$watch('vm.settings.useEcommerceNames', function (value) {

@@ -3,12 +3,13 @@
 		<a class="button button-clear" nav-direction="back" data-ng-click="vm.goBack();">voltar</a>
 	</ion-nav-buttons>
 	<ion-content>
-		<div class="list card">
-			<div class="list product-list">
-				<div class="item" data-ng-repeat="product in vm.products | orderBy:['structure.division.name', 'structure.group.name', 'structure.department.id', 'structure.class.id', 'structure.subclass.id', 'color.id', 'size'] track by $index" data-ng-click="vm.selectProduct(product.sku)">
+		<div class="list card" data-ng-repeat="division in vm.divisions | orderBy: 'division.name'">
+            <div class="item item-divider" data-ng-bind="division.name" data-ng-click="division.show = !division.show"></div>
+			<div class="list product-list" data-ng-show="division.show">
+				<div class="item" data-ng-repeat="product in vm.products | filter : division.name | orderBy:['structure.division.name', 'structure.group.name', 'structure.department.id', 'structure.class.id', 'structure.subclass.id', 'color.id', 'size'] track by $index" data-ng-click="vm.selectProduct(product.sku)">
                     <div class="product-header item-text-wrap">
 						<b><span data-ng-bind="product.name"></span></b><br />
-						<span class="reference">{{  product.productCode}} - {{ product.sku }}</span>
+						<span class="reference">{{ product.productCode }} - {{ product.sku }}</span>
 					</div>
 					<div class="product-body">
 						<div class="details">

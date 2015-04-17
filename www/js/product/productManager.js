@@ -67,6 +67,32 @@ angular.module('replenishment').service('productManager', ['authentication', 'se
         return size;
     }
 
+    function getSizes(sizes, skus, selectedColor) {
+        var i, sku, size, result = [], found = false;
+
+        if (sizes) {
+            for (i = 0; i < sizes.length; i += 1) {
+                size = {};
+                size.name = sizes[i];
+                
+                found = false;
+                
+                for (sku in skus) {
+                    if (selectedColor && skus[sku].size === size.name && skus[sku].color === selectedColor) {
+                        found = true;
+                        break;
+                    }
+                }
+                
+                size.disabled = !found;
+            
+                result.push(size);
+            }
+        }
+
+        return result;
+    }
+
     function getScent(scents, id) {
         var i, scent;
 
@@ -80,6 +106,22 @@ angular.module('replenishment').service('productManager', ['authentication', 'se
         }
 
         return scent;
+    }
+
+    function getScents(scents) {
+        var i, scent, result = [];
+
+        if (scents) {
+            for (i = 0; i < scents.length; i += 1) {
+                scent = {};
+
+                scent.name = scents[i];
+                
+                result.push(scent);
+            }
+        }
+
+        return result;
     }
 
     function getProductName(product) {
@@ -150,22 +192,40 @@ angular.module('replenishment').service('productManager', ['authentication', 'se
         }
     };
 
-    self.findByParentId = function (productCode) {
-        var i, j, product;
+    self.findByParentId = function (productCode, attributes) {
+        var i, j, sku, color, product, newProduct = {};
 
         for (i = 0; i < products.length; i += 1) {
             if (products[i].productCode === productCode) {
                 product = products[i];
-                product.name = getProductName(product);
+                
+                for (sku in product.children) {
+                    if (product.children[sku].color === attributes.color
+                            && product.children[sku].size === attributes.size) {
+                        newProduct = getSelectedSkuData(product, product.children[sku]);
+                        newProduct.sku = sku;
+                        newProduct.pictureUrl = getPicture(product, sku);
+                        
+                        break;
+                    }
+                }
+                
+                newProduct.productCode = product.productCode;
+                newProduct.structure = product.structure;
+                newProduct.name = getProductName(product);
+                newProduct.colors = getColors(product.colors);
+                newProduct.sizes = getSizes(product.sizes, product.children, attributes.color);
+                newProduct.scents = getScents(product.scents);
+                
                 break;
             }
         }
 
-        return product;
+        return newProduct;
     };
 
     self.findBySku = function (sku) {
-        var i, j, product, newProduct = {};
+        var i, product, newProduct = {};
 
         for (i = 0; i < products.length; i += 1) {
             if (products[i].children[sku]) {
@@ -178,8 +238,8 @@ angular.module('replenishment').service('productManager', ['authentication', 'se
                 newProduct.name = getProductName(product);
                 newProduct.pictureUrl = getPicture(product, sku);
                 newProduct.colors = getColors(product.colors);
-                newProduct.sizes = product.sizes;
-                newProduct.scents = product.scents;
+                newProduct.sizes = getSizes(product.sizes, product.children, newProduct.color.id);
+                newProduct.scents = getScents(product.scents);
 
                 break;
             }

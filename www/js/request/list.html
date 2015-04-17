@@ -38,6 +38,11 @@
                 </div>
             </div>
         </div>
+        <div class="card" data-ng-show="(vm.requests | listFilter: vm.search).length === 0">
+            <div class="item item-text-wrap">
+                Nenhuma solicitação foi encontrada.
+            </div>
+        </div>
         <div class="list">
             <div class="item" data-ng-repeat="request in vm.requests | listFilter: vm.search | orderBy: vm.getSort()  track by $index" data-ng-click="vm.goTo('/request/' + request.id)">
                 <span><b># {{request.id}}</b></span> - {{request.status.name}}</b>
@@ -45,7 +50,7 @@
             <p>{{ request.division }} / {{ request.group }} - {{ request.products.length }} produto(s)</p>
 
             <p>Solicitação criada por <b>{{request.createdBy}}</b></p>
-            <p data-ng-show="request.status !== 'Finalizado'">Pendente desde <b>{{request.relevantDate | todayDateFormat : 'HH:mm' : 'dd/MM/yy HH:mm'}}</b></p>
+            <p data-ng-show="request.status !== 'Finalizado'" data-ng-show="vm.isFinished();">Pendente desde <b>{{request.relevantDate | todayDateFormat : 'HH:mm' : 'dd/MM/yy HH:mm'}}</b></p>
         </div>
         </div>
     </ion-content>

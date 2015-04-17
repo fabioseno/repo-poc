@@ -7,11 +7,19 @@ angular.module('replenishment').directive('scrollSize', function () {
 		
 		link: function (scope, element, attrs) {
 
-            var length = parseInt(attrs.length),
+            var itemLength = parseInt(attrs.itemLength),
                 itemWidth = parseInt(attrs.itemWidth),
-                marginSize = parseInt(attrs.marginSize);
+                marginSize = parseInt(attrs.marginSize),
+                scrollSize = (itemLength * itemWidth) + (itemLength * marginSize),
+                computedWidth;
             
-            element[0].style.width = (length * itemWidth) + ((length - 1) * marginSize) + 'px';
+            computedWidth = parseInt(window.getComputedStyle(element[0].parentElement, null).getPropertyValue("width").replace('px', ''));
+            
+            if (scrollSize > computedWidth) {
+                element[0].style.width = scrollSize + 'px';
+            } else {
+                element[0].style.width = '100%';
+            }
 		}
 	};
 });

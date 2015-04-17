@@ -27,7 +27,7 @@
 						<label>Categoria</label>
 						<span type="text">{{ vm.request.division }} / {{ vm.request.group }}</span>
 					</div>
-					<div class="col field">
+					<div class="col field" data-ng-show="vm.isFinished();">
 						<label>Pendente desde</label>
 						<span type="text" data-ng-bind="vm.request.relevantDate | todayDateFormat : 'HH:mm' : 'dd/MM/yy HH:mm'"></span>
 					</div>

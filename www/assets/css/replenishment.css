@@ -34,6 +34,7 @@ body {
     color: #fff;
     font-weight: normal;
     font-size: 16px;
+    padding-top: 2px;
 }
 
 .quantity-selector .quantity {
@@ -177,6 +178,7 @@ div.attributes {
 div.attributes .attribute {
     float: left;
     margin-right: 5px;
+    margin-bottom: 5px;
     text-align: center;
 }
 
@@ -185,7 +187,7 @@ div.attributes .color {
     height: 60px;
     border-radius: 10px;
     display: block;
-    font-size: 14px;
+    font-size: 13px;
 }
 
 div.attributes .size {
@@ -197,6 +199,19 @@ div.attributes .size {
     line-height: 48px;
 }
 
-/*
-selected
-1px solid #ce0415;*/
+.disabled-attribute div {
+    background-color: #e3e3e3;
+}
+
+.selected-attribute span {
+    color: #ce0415;
+}
+
+.selected-attribute .size {
+    color: #ce0415;
+    border: 1px solid #ce0415 !important;
+}
+
+.item-search i {
+    padding: 0px 10px;
+}
