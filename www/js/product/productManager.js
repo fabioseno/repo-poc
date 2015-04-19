@@ -1,5 +1,5 @@
 /*global angular*/
-angular.module('replenishment').service('productManager', ['authentication', 'settingsManager', 'productData', function (authentication, settingsManager, products) {
+angular.module('replenishment').service('productManager', ['settingsManager', 'productData', function (settingsManager, products) {
     'use strict';
 
     var self = this;

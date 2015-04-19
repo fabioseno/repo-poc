@@ -90,11 +90,6 @@ body {
 .product-header {
     width: 100%;
     clear: both;
-    margin-bottom: 10px;
-}
-
-.product-header .reference {
-    font-size: 14px;
 }
 
 .product-body {
@@ -106,6 +101,10 @@ body {
 .product-body .details {
     -webkit-flex: 1;
     flex: 1;
+}
+
+.product-header .reference {
+    font-size: 13px;
 }
 
 .inner-tabs {
