@@ -43,11 +43,10 @@
                     </div>
 					<div class="product-header item-text-wrap">
 						<b><span data-ng-bind="product.name"></span></b>
-						
 					</div>
 					<div class="product-body">
 						<div class="details">
-							<span class="reference">Ref: {{  product.productCode}} - {{ product.sku }}</span><br /><br />
+							<span class="reference">{{  product.productCode}} - {{ product.sku }}</span><br /><br />
 							<span data-ng-bind="product.structure.division.name"></span> / <span data-ng-bind="product.structure.group.name"></span><br />
 							<span data-ng-bind="product.color.name"></span> - <span data-ng-bind="product.size"></span><br />
 							<span data-ng-bind="product.price | currency : 'R$ '"></span><br /><br />
