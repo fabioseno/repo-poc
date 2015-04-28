@@ -30,7 +30,7 @@
             </div>
             <div class="item item-input" data-ng-show="vm.product.sizes && vm.product.sizes.length > 0">
                 <div class="attributes">
-                    <div class="attribute" data-ng-class="{ 'selected-attribute' : vm.selectedSku.size === size.name, 'disabled-attribute' : size.disabled }" data-ng-click="vm.selectAttribute('size', size.name, size.disabled);" data-ng-repeat="size in vm.product.sizes">
+                    <div class="attribute size-attribute" data-ng-class="{ 'selected-attribute' : vm.selectedSku.size === size.name, 'disabled-attribute' : size.disabled }" data-ng-click="vm.selectAttribute('size', size.name, size.disabled);" data-ng-repeat="size in vm.product.sizes">
                         <div class="size" data-ng-bind="size.name"></div>
                     </div>
                 </div>

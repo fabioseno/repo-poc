@@ -102,7 +102,7 @@ body {
     flex: 1;
 }
 
-.product-header .reference {
+.product-body .reference {
     font-size: 13px;
 }
 
@@ -166,11 +166,6 @@ div.page header.login {
 /* Attributes */
 div.attributes {
     display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    align-content: center;
-    vertical-align: middle;
-    margin: 6px 0px;
 }
 
 div.attributes .attribute {
@@ -178,6 +173,21 @@ div.attributes .attribute {
     margin-right: 5px;
     margin-bottom: 5px;
     text-align: center;
+    font-size: 13px;
+    width: 60px;
+}
+
+.attribute span {
+    white-space: normal;
+}
+
+.selected-attribute span {
+    color: #ce0415;
+    white-space: normal;
+}
+
+div.attributes .size-attribute {
+    width: 40px;
 }
 
 div.attributes .color {
@@ -189,14 +199,13 @@ div.attributes .color {
 }
 
 div.attributes .size {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     border: 1px solid #ccc;
     border-radius: 10px;
     text-align: center;
-    line-height: 48px;
+    line-height: 38px;
 }
-
 .disabled-attribute div {
     background-color: #e3e3e3;
 }

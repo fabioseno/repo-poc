@@ -1,4 +1,4 @@
-﻿<ion-view view-title="Solicitação">
+<ion-view view-title="Solicitação">
 	<ion-nav-buttons class="button button-clear button-positive" side="primary">
 		<a class="button button-clear" nav-direction="back" data-ng-click="vm.goBack();">voltar</a>
 	</ion-nav-buttons>
@@ -27,7 +27,7 @@
 						<label>Categoria</label>
 						<span type="text">{{ vm.request.division }} / {{ vm.request.group }}</span>
 					</div>
-					<div class="col field" data-ng-show="vm.isFinished();">
+					<div class="col field" data-ng-show="!vm.isFinished();">
 						<label>Pendente desde</label>
 						<span type="text" data-ng-bind="vm.request.relevantDate | todayDateFormat : 'HH:mm' : 'dd/MM/yy HH:mm'"></span>
 					</div>
@@ -47,7 +47,7 @@
 					</div>
 					<div class="product-body">
 						<div class="details">
-							<span class="reference">{{  product.productCode}} - {{ product.sku }}</span><br /><br />
+							<span class="reference">Ref: {{  product.productCode}} - {{ product.sku }}</span><br /><br />
 							<span data-ng-bind="product.structure.division.name"></span> / <span data-ng-bind="product.structure.group.name"></span><br />
 							<span data-ng-bind="product.color.name"></span> - <span data-ng-bind="product.size"></span><br />
 							<span data-ng-bind="product.price | currency : 'R$ '"></span><br /><br />
