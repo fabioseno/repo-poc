@@ -2,9 +2,13 @@
 (function () {
 	'use strict';
 
-	function RequestList($scope, $location, requestManager, userManager, toaster) {
+	function RequestList($scope, $location, requestManager, userManager) {
 		var vm = this;
-
+        
+        vm.showFilter = false;
+        vm.statusList = requestManager.getStatusList();
+        vm.search = requestManager.getFilters();
+        
 		vm.goTo = function (path) {
 			$location.url(path);
 		};
@@ -12,14 +16,6 @@
         vm.isFinished = function () {
             return (!vm.request || (vm.request && vm.request.status.id === requestManager.status.finished.id));
         };
-        
-        vm.bindStatusList = function () {
-            vm.statusList = requestManager.getStatusList();
-        };
-
-        vm.getFilters = function () {
-			vm.search = requestManager.getFilters();
-		};
         
 		vm.loadRequests = function () {
 			vm.requests = requestManager.getList();
@@ -42,12 +38,10 @@
             requestManager.saveFilter(value);
         }, true);
 
-        vm.getFilters();
-		vm.bindStatusList();
         vm.loadRequests();
 	}
 
-	RequestList.$inject = ['$scope', '$location', 'requestManager', 'userManager', 'toaster'];
+	RequestList.$inject = ['$scope', '$location', 'requestManager', 'userManager'];
 
 	angular.module('replenishment').controller('requestList', RequestList);
 

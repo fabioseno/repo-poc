@@ -33,12 +33,12 @@
 					</div>
 				</div>
 			</div>
-			<div class="item inner-tabs tabs tabs-secondary" data-ng-show="vm.enableStatusButton() || vm.canDelete(vm.request)">
+			<div class="item inner-tabs tabs tabs-secondary" data-ng-show="vm.enableStatusButton() || vm.canDelete(vm.request)" data-ng-cloak>
                 <button class="inner-tab-item button button button-clear button-positive" data-ng-bind="vm.updateStatusButtonLabel" data-ng-click="vm.changeStatus();" data-ng-show="vm.enableStatusButton();"></button>
                 <button class="inner-tab-item button button-clear button-assertive" data-ng-click="vm.deleteRequest();" data-ng-show="vm.canDelete(vm.request);">Excluir solicitação</button>
 			</div>
 			<div class="list product-list">
-				<div class="item" data-ng-repeat="product in vm.request.products | orderBy:['structure.division.name', 'structure.group.name', 'productCode', 'structure.subclass.id', 'structure.class.id', 'structure.department.id'] track by $index" data-ng-click="vm.viewProduct(vm.request.id, product.sku);">
+				<div class="item" data-ng-repeat="product in vm.request.products | orderBy:['structure.division.name', 'structure.group.name', 'structure.department.id', 'structure.class.id', 'structure.subclass.id', 'productCode', 'color.name', 'size'] track by $index" data-ng-click="vm.viewProduct(vm.request.id, product.sku);">
                     <div class="product-status" data-ng-class="vm.getColorStatus(product);">
                     </div>
 					<div class="product-header item-text-wrap">
@@ -46,7 +46,7 @@
 					</div>
 					<div class="product-body">
 						<div class="details">
-							<span class="reference">{{  product.productCode}} - {{ product.sku }}</span><br /><br />
+							<span>{{ product.sku }} - </span><span data-ng-bind-html="product.productCode | productCodeHighlight"></span><br /><br />
 							<span data-ng-bind="product.structure.division.name"></span> / <span data-ng-bind="product.structure.group.name"></span><br />
 							<span data-ng-bind="product.color.name"></span> - <span data-ng-bind="product.size"></span><br />
 							<span data-ng-bind="product.price | currency : 'R$ '"></span><br /><br />

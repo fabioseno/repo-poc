@@ -2,7 +2,7 @@
 (function () {
 	'use strict';
 
-	function RequestDetails($scope, $location, $state, $stateParams, requestManager, productManager, toaster) {
+	function RequestDetails($timeout, $location, $state, $stateParams, requestManager, productManager, toaster) {
 		var vm = this;
 
         vm.loadRequest = function (id, openProductDetails) {
@@ -36,7 +36,7 @@
         vm.changeStatus = function () {
 			navigator.notification.confirm('Confirma operação?', function (buttonIndex) {
 				if (buttonIndex === 1) {
-                    $scope.$apply(function () {
+                    $timeout(function () {
                         requestManager.moveToNextStatus(vm.request);
 
                         if (vm.request.status.id !== requestManager.status.pending.id) {
@@ -54,7 +54,7 @@
         vm.deleteRequest = function () {
 			navigator.notification.confirm('Deseja excluir a solicitação?', function (buttonIndex) {
 				if (buttonIndex === 1) {
-                    $scope.$apply(function () {
+                    $timeout(function () {
                         requestManager.deleteRequest(vm.request.id);
                         $state.go('app.tab.requests');
 
@@ -108,7 +108,7 @@
 		vm.loadRequest($stateParams.id, true);
 	}
 
-	RequestDetails.$inject = ['$scope', '$location', '$state', '$stateParams', 'requestManager', 'productManager', 'toaster'];
+	RequestDetails.$inject = ['$timeout', '$location', '$state', '$stateParams', 'requestManager', 'productManager', 'toaster'];
 
 	angular.module('replenishment').controller('requestDetails', RequestDetails);
 

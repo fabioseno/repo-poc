@@ -2,7 +2,7 @@
 (function () {
     'use strict';
 
-    function ProductDetails($scope, $location, $stateParams, requestManager, productManager, toaster) {
+    function ProductDetails($timeout, $location, $stateParams, requestManager, productManager, toaster) {
         var vm = this;
 
         vm.product = {};
@@ -139,7 +139,7 @@
         vm.removeProduct = function () {
             navigator.notification.confirm('Deseja remover o produto?', function (buttonIndex) {
                 if (buttonIndex === 1) {
-                    $scope.$apply(function () {
+                    $timeout(function () {
                         requestManager.removeProduct(vm.request, vm.product);
 
                         toaster.show('Produto removido com sucesso!');
@@ -169,7 +169,7 @@
         }
     }
 
-    ProductDetails.$inject = ['$scope', '$location', '$stateParams', 'requestManager', 'productManager', 'toaster'];
+    ProductDetails.$inject = ['$timeout', '$location', '$stateParams', 'requestManager', 'productManager', 'toaster'];
 
     angular.module('replenishment').controller('productDetails', ProductDetails);
 

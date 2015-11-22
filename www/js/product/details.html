@@ -9,17 +9,22 @@
         <div class="list" data-ng-show="vm.canEdit()">
             <label class="item item-input">
                 <span class="input-label">Código pai</span>
-                <input type="tel" placeholder="Código pai" data-ng-model="vm.product.productCode" ng-change="vm.findByParentId()" ng-model-options="{updateOn: 'blur'}" data-ng-readonly="!vm.canEdit()" />
+                <b><input type="tel" placeholder="Código pai" data-ng-model="vm.product.productCode" ng-change="vm.findByParentId()" ng-model-options="{updateOn: 'blur'}" data-ng-readonly="!vm.canEdit()" /></b>
             </label>
             <div class="item item-input item-icon-right item-search">
                 <span class="input-label">SKU</span>
-                <input type="tel" placeholder="SKU" data-ng-model="vm.product.sku" data-ng-change="vm.findByChildId()" ng-model-options="{updateOn: 'blur'}" data-ng-readonly="!vm.canEdit()"  />
+                <b><input type="tel" placeholder="SKU" data-ng-model="vm.product.sku" data-ng-change="vm.findByChildId()" ng-model-options="{updateOn: 'blur'}" data-ng-readonly="!vm.canEdit()"  /></b>
                 <i class="icon ion-search" data-ng-click="vm.selectProduct();"></i>
             </div>
-            <div class="item item-input" data-ng-show="vm.canEdit()">
-                <span class="input-label">Quantidade</span>
-                <div data-numeric-selector data-quantity="vm.product.quantity"></div>
-            </div>
+            <label class="item item-divider">
+            </label>
+            <label class="item item-text-wrap" data-ng-show="vm.product.name">
+                <b><span data-ng-bind="vm.product.name"></span></b>
+            </label>
+            <label class="item item-input" data-ng-show="vm.product.structure.division.name">
+                <span class="input-label">Categoria</span>
+                <b><span>{{ vm.product.structure.division.name }} / {{ vm.product.structure.group.name }}</span></b>
+            </label>
             <div class="item item-input" data-ng-show="vm.product.colors && vm.product.colors.length > 0">
                 <div class="attributes">
                     <div class="attribute" data-ng-class="{ 'selected-attribute' : vm.selectedSku.color === color.id }" data-ng-click="vm.selectAttribute('color', color.id, color.disabled);" data-ng-repeat="color in vm.product.colors">
@@ -33,6 +38,9 @@
                     <div class="attribute size-attribute" data-ng-class="{ 'selected-attribute' : vm.selectedSku.size === size.name, 'disabled-attribute' : size.disabled }" data-ng-click="vm.selectAttribute('size', size.name, size.disabled);" data-ng-repeat="size in vm.product.sizes">
                         <div class="size" data-ng-bind="size.name"></div>
                     </div>
+                    <div class="attribute size-attribute">
+                        <div class="size">Grade</div>
+                    </div>
                 </div>
             </div>
             <div class="item item-input" data-ng-show="vm.product.scents && vm.product.scents.length > 0">
@@ -42,8 +50,16 @@
                     </li>
                 </ul>
             </div>
+            <div class="item item-input" data-ng-show="vm.canEdit()">
+                <span class="input-label">Quantidade</span>
+                <b><div data-numeric-selector data-quantity="vm.product.quantity"></div></b>
+            </div>
         </div>
         <div class="list card" data-ng-show="vm.product.name">
+            <label class="item item-input" data-ng-show="!vm.canEdit();">
+                <span class="input-label">Pai / SKU</span>
+                <b><span class="product-code">{{ vm.product.sku }} - <span data-ng-bind-html="vm.product.productCode | productCodeHighlight"></span></span></b>
+            </label>
             <label class="item image" data-ng-show="vm.product.name">
                 <img data-ng-src="{{ vm.product.pictureUrl }}">
             </label>
@@ -53,39 +69,69 @@
             </label>
             <div class="item item-input" data-ng-show="vm.canExecute();">
                 <span class="input-label">Separado(s)</span>
-                <div data-numeric-selector data-quantity="vm.product.quantityFound"></div>
+                <b><div data-numeric-selector data-quantity="vm.product.quantityFound"></div></b>
             </div>
             <div class="item item-input" data-ng-show="!vm.canExecute() && !vm.isDraft() && !vm.isPending()">
                 <span class="input-label">Separado(s)</span>
                 <b><span data-ng-bind="vm.product.quantityFound"></span></b>
             </div>
-            <label class="item item-text-wrap">
-                <span data-ng-bind="vm.product.name"></span>
-            </label>
-			<label class="item item-input" data-ng-show="vm.product.structure.division.name">
-                <span class="input-label">Categoria</span>
-                <span>{{ vm.product.structure.division.name }} / {{ vm.product.structure.group.name }}</span>
-            </label>
             <label class="item item-input" data-ng-show="vm.product.color">
                 <span class="input-label">Cor</span>
-                <span data-ng-bind="vm.product.color.name"></span>
+                <img class="color" data-ng-src="{{ vm.product.color.url }}">&nbsp;
+                <b><span data-ng-bind="vm.product.color.name"></span></b>
             </label>
-            <label class="item item-input" data-ng-show="vm.product.size">
-                <span class="input-label">Tamanho</span>
-                <span data-ng-bind="vm.product.size"></span>
-            </label>
-            <label class="item item-input" data-ng-show="vm.product.scent">
-                <span class="input-label">Aroma</span>
-                <span data-ng-bind="vm.product.scent"></span>
-            </label>
-            <label class="item item-input" data-ng-show="vm.product.price">
-                <span class="input-label">Preço</span>
-                <span data-ng-bind="vm.product.price | currency : 'R$ '"></span>
-            </label>
-            <label class="item item-input" data-ng-show="vm.canEdit() && vm.product.sku">
-                <button class="button button-block button-clear button-assertive" data-ng-click="vm.removeProduct();">
-                    Excluir produto
-                </button>
+
+            <label class="item" data-ng-show="vm.product.name">
+                <div class="list list-inset">
+                    <div class="item">
+                        <div class="sku">
+                            <div class="sku-info sku-title">Tamanho: {{ vm.product.size }}</div>
+                            <div class="sku-info sku-price" data-ng-bind="vm.product.price | currency : 'R$ '"></div>
+                        </div>
+                    </div>
+                    <div class="item item-input">
+                        <span class="input-label">SKU</span>
+                        <b><span data-ng-bind="vm.product.sku"></span></b>
+                    </div>
+                    <div class="item item-input">
+                        <span class="input-label">Solicitado(s)</span>
+                        <b><span data-ng-bind="vm.product.quantity"></span></b>
+                    </div>
+                    <div class="item item-input">
+                        <span class="input-label">Separado(s)</span>
+                        <b><div data-numeric-selector data-quantity="vm.product.quantityFound"></div></b>
+                    </div>
+                    <div class="item item-input" data-ng-show="vm.canEdit() && vm.product.sku">
+                        <button class="button button-block button-clear button-assertive" data-ng-click="vm.removeProduct();">
+                            <b>Excluir produto</b>
+                        </button>
+                    </div>
+                </div>
+                <div class="list list-inset">
+                    <div class="item">
+                        <div class="sku">
+                            <div class="sku-info sku-title">Tamanho: {{ vm.product.size }}</div>
+                            <div class="sku-info sku-price" data-ng-bind="vm.product.price | currency : 'R$ '"></div>
+                        </div>
+                    </div>
+                    <div class="item item-input">
+                        <span class="input-label">SKU</span>
+                        <b><span data-ng-bind="vm.product.sku"></span></b>
+                    </div>
+                    <div class="item item-input">
+                        <span class="input-label">Solicitado(s)</span>
+                        <b><span data-ng-bind="vm.product.quantity"></span></b>
+                    </div>
+                    <div class="item item-input">
+                        <span class="input-label">Separado(s)</span>
+                        <b><div data-numeric-selector data-quantity="vm.product.quantityFound"></div></b>
+                    </div>
+                    <div class="item item-input" data-ng-show="vm.canEdit() && vm.product.sku">
+                        <button class="button button-block button-clear button-assertive" data-ng-click="vm.removeProduct();">
+                            <b>Excluir produto</b>
+                        </button>
+                    </div>
+                </div>
             </label>
         </div>
     </ion-content>

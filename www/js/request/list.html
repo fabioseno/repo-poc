@@ -5,11 +5,11 @@
     <ion-content>
         <ion-refresher pulling-text="Atualizar..." on-refresh="vm.loadRequests();">
         </ion-refresher>
-        <div class="list card">
-            <div class="item item-divider" data-ng-click="showFilter = !showFilter">
+        <div class="list card" data-ng-cloak>
+            <div class="item item-divider" data-ng-click="vm.showFilter = !vm.showFilter">
                 Filtros
             </div>
-            <div data-ng-show="showFilter">
+            <div data-ng-show="vm.showFilter">
                 <div class="list card">
                     <div class="item item-divider">
                         Status

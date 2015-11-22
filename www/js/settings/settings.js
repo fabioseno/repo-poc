@@ -2,9 +2,9 @@
 (function () {
     'use strict';
 
-    function Settings($scope, $location, authenticationManager, requestManager, settingsManager, userManager) {
+    function Settings($scope, $timeout, $location, authenticationManager, requestManager, settingsManager, userManager) {
         var vm = this;
-        
+
         vm.getUserName = function () {
             return userManager.getUserName();
         };
@@ -14,21 +14,21 @@
             showPictures: settingsManager.getValue(settingsManager.settings.showPictures),
             onlinePictures: settingsManager.getValue(settingsManager.settings.onlinePictures)
         };
-        
+
         vm.resetRequests = function () {
-//            navigator.notification.confirm('Deseja limpar as solicitações?', function (buttonIndex) {
-//                if (buttonIndex === 1) {
-                    //$scope.$apply(function () {
+            navigator.notification.confirm('Deseja limpar as solicitações?', function (buttonIndex) {
+                if (buttonIndex === 1) {
+                    $timeout(function () {
                         requestManager.resetRequests();
-                    //});
-//                }
-//            }, 'Limpar');
+                    });
+                }
+            }, 'Limpar');
         };
 
         vm.signout = function () {
             navigator.notification.confirm('Deseja realmente sair?', function (buttonIndex) {
                 if (buttonIndex === 1) {
-                    $scope.$apply(function () {
+                    $timeout(function () {
                         $location.path('/login');
                         authenticationManager.signout();
                     });
@@ -49,7 +49,7 @@
         });
     }
 
-    Settings.$inject = ['$scope', '$location', 'authenticationManager', 'requestManager', 'settingsManager', 'userManager'];
+    Settings.$inject = ['$scope', '$timeout', '$location', 'authenticationManager', 'requestManager', 'settingsManager', 'userManager'];
 
     angular.module('replenishment').controller('settings', Settings);
 
